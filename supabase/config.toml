@@ -1,0 +1,19 @@
+project_id = "qgxokeacqbhjntgucspf"
+
+[functions.chat]
+verify_jwt = false
+
+[functions.generate-quiz]
+verify_jwt = false
+
+[functions.explain-answers]
+verify_jwt = false
+
+[functions.extract-content]
+verify_jwt = false
+
+[functions.check-answer]
+verify_jwt = false
+
+[functions.generate-title]
+verify_jwt = false
