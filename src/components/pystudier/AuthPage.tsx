@@ -225,11 +225,6 @@ const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
             {mode === "login" ? "Sign in to continue studying" : "Join Pystudier and start learning"}
           </p>
 
-          {chatroomRedirect && (
-            <div className="mb-4 px-3 py-2.5 rounded-xl bg-primary/10 border border-primary/20 text-center">
-              <p className="text-xs font-semibold text-primary">✓ You will be taken to Study Rooms after signing in</p>
-            </div>
-          )}
 
           {/* Google */}
           <button
