@@ -10,7 +10,6 @@ import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp
 
 interface AuthPageProps {
   onAuthSuccess: () => void;
-  chatroomRedirect?: string | null;
 }
 
 type AuthMode = "login" | "signup" | "verify";
