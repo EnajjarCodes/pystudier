@@ -14,7 +14,7 @@ interface AuthPageProps {
 
 type AuthMode = "login" | "signup" | "verify";
 
-const AuthPage = ({ onAuthSuccess, chatroomRedirect }: AuthPageProps) => {
+const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
   const [mode, setMode] = useState<AuthMode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
