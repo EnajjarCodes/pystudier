@@ -34,6 +34,7 @@ type QuizPhase = "setup" | "loading" | "taking" | "results";
 
 interface QuizPanelProps {
   userName: string;
+  userId: string;
   chatContext?: string;
 }
 
@@ -51,7 +52,7 @@ const DIFFICULTIES = [
   { id: "hard" as const, label: "Hard", icon: Flame, desc: "Complex reasoning" },
 ];
 
-const QuizPanel = ({ userName, chatContext }: QuizPanelProps) => {
+const QuizPanel = ({ userName, userId, chatContext }: QuizPanelProps) => {
   const [phase, setPhase] = useState<QuizPhase>("setup");
   const [setup, setSetup] = useState<QuizSetup>({
     topic: "",
@@ -111,21 +112,22 @@ const QuizPanel = ({ userName, chatContext }: QuizPanelProps) => {
     }
   };
 
+  const normalizeAnswer = (s: string) => s.toLowerCase().trim().replace(/[.,;:!?'"()]/g, "").replace(/\s+/g, " ");
+
   const checkAnswerWithAI = async (questionIdx: number, answer: string) => {
     const q = questions[questionIdx];
-    // Use AI for ALL types
     try {
       const { data, error: fnError } = await supabase.functions.invoke("check-answer", {
         body: { userAnswer: answer, correctAnswer: q.correctAnswer, question: q.question },
       });
       if (fnError || data?.error) {
-        const correct = answer.toLowerCase().trim() === q.correctAnswer.toLowerCase().trim();
+        const correct = normalizeAnswer(answer) === normalizeAnswer(q.correctAnswer);
         setAiResults((prev) => ({ ...prev, [questionIdx]: { correct, explanation: correct ? "" : q.explanation } }));
       } else {
         setAiResults((prev) => ({ ...prev, [questionIdx]: { correct: data.correct, explanation: data.correct ? "" : (data.explanation || q.explanation) } }));
       }
     } catch {
-      const correct = answer.toLowerCase().trim() === q.correctAnswer.toLowerCase().trim();
+      const correct = normalizeAnswer(answer) === normalizeAnswer(q.correctAnswer);
       setAiResults((prev) => ({ ...prev, [questionIdx]: { correct, explanation: correct ? "" : q.explanation } }));
     }
   };
@@ -157,6 +159,19 @@ const QuizPanel = ({ userName, chatContext }: QuizPanelProps) => {
   const finishQuiz = async () => {
     setPhase("results");
 
+    // Save quiz progress
+    const score = getScore();
+    try {
+      await supabase.from("study_progress" as any).insert({
+        user_id: userId,
+        activity_type: "quiz_completed",
+        score,
+        total: questions.length,
+        topic: setup.topic,
+      });
+    } catch {}
+
+
     // Check all unchecked answers with AI
     const uncheckedPromises: Promise<void>[] = [];
     questions.forEach((q, i) => {
@@ -179,7 +194,7 @@ const QuizPanel = ({ userName, chatContext }: QuizPanelProps) => {
         if (result && !result.correct) return { question: q.question, userAnswer: userAnswers[i] || "", correctAnswer: q.correctAnswer };
         if (!result) {
           const ua = userAnswers[i] || "";
-          if (ua.toLowerCase().trim() !== q.correctAnswer.toLowerCase().trim()) return { question: q.question, userAnswer: ua, correctAnswer: q.correctAnswer };
+          if (normalizeAnswer(ua) !== normalizeAnswer(q.correctAnswer)) return { question: q.question, userAnswer: ua, correctAnswer: q.correctAnswer };
         }
         return null;
       })
@@ -208,8 +223,7 @@ const QuizPanel = ({ userName, chatContext }: QuizPanelProps) => {
       } else if (aiResults[i]) {
         if (aiResults[i].correct) correct++;
       } else {
-        const ua = (userAnswers[i] || "").toLowerCase().trim();
-        if (ua === q.correctAnswer.toLowerCase().trim()) correct++;
+        if (normalizeAnswer(userAnswers[i] || "") === normalizeAnswer(q.correctAnswer)) correct++;
       }
     });
     return correct;
@@ -357,7 +371,7 @@ const QuizPanel = ({ userName, chatContext }: QuizPanelProps) => {
 
     const isCorrect = q.type === "matching"
       ? (q.matchPairs || []).every((p) => (matchingAnswers[currentQ] || {})[p.left] === p.right)
-      : aiResults[currentQ]?.correct ?? ((userAnswers[currentQ] || "").toLowerCase().trim() === q.correctAnswer.toLowerCase().trim());
+      : aiResults[currentQ]?.correct ?? (normalizeAnswer(userAnswers[currentQ] || "") === normalizeAnswer(q.correctAnswer));
 
     return (
       <div className="flex flex-col h-full">
@@ -537,7 +551,7 @@ const QuizPanel = ({ userName, chatContext }: QuizPanelProps) => {
             } else if (aiResults[i]) {
               correct = aiResults[i].correct;
             } else {
-              correct = (userAnswers[i] || "").toLowerCase().trim() === q.correctAnswer.toLowerCase().trim();
+              correct = normalizeAnswer(userAnswers[i] || "") === normalizeAnswer(q.correctAnswer);
             }
             return (
               <div key={i} className={`p-2.5 sm:p-3 rounded-xl border ${correct ? "border-primary/30 bg-primary/5" : "border-destructive/30 bg-destructive/5"}`}>

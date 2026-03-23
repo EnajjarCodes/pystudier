@@ -4,7 +4,7 @@ import AuthPage from "@/components/pystudier/AuthPage";
 import StudyDashboard from "@/components/pystudier/StudyDashboard";
 import Onboarding from "@/components/pystudier/Onboarding";
 import type { Session } from "@supabase/supabase-js";
-import mascotImg from "@/assets/mascot.png";
+
 
 const Index = () => {
   const [session, setSession] = useState<Session | null>(null);
@@ -53,7 +53,6 @@ const Index = () => {
   if (loading) {
     return (
       <div className="min-h-[100dvh] gradient-hero flex flex-col items-center justify-center gap-4">
-        <img src={mascotImg} alt="Pylo" className="w-16 h-16 object-contain pylo-idle" />
         <div className="animate-pulse font-display font-black text-2xl">
           <span className="text-primary">Py</span>
           <span className="text-coral">studier</span>
@@ -69,7 +68,6 @@ const Index = () => {
   if (!profileChecked) {
     return (
       <div className="min-h-[100dvh] gradient-hero flex flex-col items-center justify-center gap-4">
-        <img src={mascotImg} alt="Pylo" className="w-16 h-16 object-contain pylo-idle" />
         <div className="animate-pulse font-display font-black text-2xl">
           <span className="text-primary">Py</span>
           <span className="text-coral">studier</span>

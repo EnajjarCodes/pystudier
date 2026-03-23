@@ -63,7 +63,8 @@ const Onboarding = ({ onComplete, existingName }: OnboardingProps) => {
   // Pylo intro text typewriter
   const [introText, setIntroText] = useState("");
   const [introDone, setIntroDone] = useState(false);
-  const fullIntro = `Hey${existingName ? ` ${existingName}` : ""}! I'm Pylo, your study buddy! I'm here to help you learn, take notes, and ace your exams! Let me get to know you a bit better.`;
+  const displayName = name.trim() || existingName || "";
+  const fullIntro = `Hey${displayName ? ` ${displayName}` : ""}! I'm Pylo, your study buddy! 🦉 I'm here to help you learn, take notes, and ace your exams! Let me get to know you a bit better.`;
 
   useEffect(() => {
     if (step === 1) {
@@ -271,7 +272,7 @@ const Onboarding = ({ onComplete, existingName }: OnboardingProps) => {
         </motion.div>
 
         {/* Logo */}
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="flex items-center gap-0.5">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="flex items-center">
           <span className="text-xl sm:text-2xl font-display font-black text-primary tracking-tight">Py</span>
           <span className="text-xl sm:text-2xl font-display font-black text-coral tracking-tight">studier</span>
         </motion.div>

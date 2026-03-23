@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, ImagePlus, FileText, Sparkles, Loader2, Wifi, Copy, Check, Pencil, X } from "lucide-react";
 import ReactMarkdown from "react-markdown";
@@ -47,8 +47,19 @@ const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading
   const [editingMessageIdx, setEditingMessageIdx] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const autoResize = useCallback(() => {
+    const ta = textareaRef.current;
+    if (ta) {
+      ta.style.height = "auto";
+      ta.style.height = Math.min(ta.scrollHeight, 140) + "px";
+    }
+  }, []);
+
+  useEffect(() => { autoResize(); }, [input, autoResize]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -95,9 +106,11 @@ const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading
     }
   };
 
-  const quickPrompts = [
-    { label: "Summarize this", icon: Sparkles, prompt: "Please summarize the key points from what we've discussed." },
-    { label: "Make notes", icon: FileText, prompt: "Create organized study notes from our conversation." },
+  const quickActions = [
+    { label: "Create Quiz", icon: Sparkles, prompt: "Create a quiz about " },
+    { label: "Explain a Topic", icon: Sparkles, prompt: "Explain the concept of " },
+    { label: "Summarize Text", icon: Sparkles, prompt: "Summarize the following: " },
+    { label: "Make Notes", icon: FileText, prompt: "Create organized study notes about " },
   ];
 
   return (
@@ -122,11 +135,11 @@ const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading
               <h3 className="font-display font-bold text-sm sm:text-lg text-foreground">Hey {userName}! Ready to study?</h3>
               <p className="text-muted-foreground text-xs sm:text-sm mt-0.5">Send a message, upload an image, or share a document</p>
             </div>
-            <div className="flex flex-wrap gap-2 justify-center mt-1">
-              {quickPrompts.map((qp) => (
-                <motion.button key={qp.label} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => onSendMessage(qp.prompt)}
-                  className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl bg-secondary text-secondary-foreground font-body font-semibold text-xs sm:text-sm shadow-card hover:shadow-soft transition-all">
-                  <qp.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />{qp.label}
+            <div className="flex flex-wrap gap-2 justify-center mt-2">
+              {quickActions.map((qa) => (
+                <motion.button key={qa.label} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setInput(qa.prompt)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-secondary-foreground font-body font-medium text-xs shadow-card hover:shadow-soft transition-all border border-border">
+                  <qa.icon className="w-3 h-3" />{qa.label}
                 </motion.button>
               ))}
             </div>
@@ -239,8 +252,10 @@ const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading
               <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
             </motion.button>
           </div>
-          <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask Pylo anything..."
-            className="flex-1 min-w-0 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border border-border bg-background text-foreground font-body text-xs sm:text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-muted-foreground" />
+          <textarea ref={textareaRef} value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask Pylo anything..."
+            rows={1}
+            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSubmit(e); } }}
+            className="flex-1 min-w-0 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border border-border bg-background text-foreground font-body text-xs sm:text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-muted-foreground resize-none overflow-y-auto" style={{ maxHeight: 140 }} />
           <motion.button type="submit" disabled={isLoading || (!input.trim() && attachedImages.length === 0 && !attachedFile)} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
             className="p-2.5 sm:p-3 rounded-xl gradient-primary text-primary-foreground shadow-soft disabled:opacity-40 disabled:cursor-not-allowed transition-all flex-shrink-0">
             <Send className="w-4 h-4 sm:w-5 sm:h-5" />
