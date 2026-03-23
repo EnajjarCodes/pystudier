@@ -34,6 +34,7 @@ type QuizPhase = "setup" | "loading" | "taking" | "results";
 
 interface QuizPanelProps {
   userName: string;
+  userId: string;
   chatContext?: string;
 }
 
