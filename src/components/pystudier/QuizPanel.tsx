@@ -240,7 +240,7 @@ const QuizPanel = ({ userName, chatContext }: QuizPanelProps) => {
 
         <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4 sm:space-y-6">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center gap-2 sm:gap-3">
-            <img src={mascot} alt="Pylo" className="w-14 h-14 sm:w-20 sm:h-20 object-contain" />
+            <img src={mascot} alt="Pylo" className="w-14 h-14 sm:w-20 sm:h-20 object-contain pylo-appear pylo-idle" />
             <p className="font-display font-bold text-foreground text-center text-sm sm:text-base">
               Let's test your knowledge, {userName}!
             </p>
