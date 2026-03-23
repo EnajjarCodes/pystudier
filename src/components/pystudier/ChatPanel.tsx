@@ -124,11 +124,11 @@ const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading
               <h3 className="font-display font-bold text-sm sm:text-lg text-foreground">Hey {userName}! Ready to study?</h3>
               <p className="text-muted-foreground text-xs sm:text-sm mt-0.5">Send a message, upload an image, or share a document</p>
             </div>
-            <div className="flex flex-wrap gap-2 justify-center mt-1">
-              {quickPrompts.map((qp) => (
-                <motion.button key={qp.label} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => onSendMessage(qp.prompt)}
-                  className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl bg-secondary text-secondary-foreground font-body font-semibold text-xs sm:text-sm shadow-card hover:shadow-soft transition-all">
-                  <qp.icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />{qp.label}
+            <div className="flex flex-wrap gap-2 justify-center mt-2">
+              {quickActions.map((qa) => (
+                <motion.button key={qa.label} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setInput(qa.prompt)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-secondary-foreground font-body font-medium text-xs shadow-card hover:shadow-soft transition-all border border-border">
+                  <qa.icon className="w-3 h-3" />{qa.label}
                 </motion.button>
               ))}
             </div>
