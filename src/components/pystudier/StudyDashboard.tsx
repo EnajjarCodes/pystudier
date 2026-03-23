@@ -273,22 +273,12 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
         <button onClick={() => setChatSidebarOpen(!chatSidebarOpen)} className="p-1.5 sm:p-2 rounded-xl hover:bg-secondary transition-colors">
           {chatSidebarOpen ? <X className="w-4 h-4 sm:w-5 sm:h-5" /> : <Menu className="w-4 h-4 sm:w-5 sm:h-5" />}
         </button>
-        <img src={mascot} alt="Pylo" className="w-6 h-6 sm:w-8 sm:h-8 object-contain" />
+        <img src={mascot} alt="Pylo" className="w-6 h-6 sm:w-8 sm:h-8 object-contain pylo-idle" />
         <div className="flex items-baseline gap-0.5">
           <span className="font-display font-black text-primary text-base sm:text-lg">Py</span>
           <span className="font-display font-black text-coral text-base sm:text-lg">studier</span>
         </div>
-        <div className="ml-auto">
-          <motion.button
-            onClick={openStudyRooms}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl gradient-primary text-primary-foreground font-display font-bold text-xs shadow-soft"
-          >
-            <Users className="w-3.5 h-3.5" />
-            Study Rooms
-          </motion.button>
-        </div>
+        <div className="ml-auto" />
       </header>
 
       <div className="flex flex-1 overflow-hidden">

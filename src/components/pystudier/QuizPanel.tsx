@@ -240,7 +240,7 @@ const QuizPanel = ({ userName, chatContext }: QuizPanelProps) => {
 
         <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4 sm:space-y-6">
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center gap-2 sm:gap-3">
-            <img src={mascot} alt="Pylo" className="w-14 h-14 sm:w-20 sm:h-20 object-contain" />
+            <img src={mascot} alt="Pylo" className="w-14 h-14 sm:w-20 sm:h-20 object-contain pylo-appear pylo-idle" />
             <p className="font-display font-bold text-foreground text-center text-sm sm:text-base">
               Let's test your knowledge, {userName}!
             </p>
@@ -338,8 +338,8 @@ const QuizPanel = ({ userName, chatContext }: QuizPanelProps) => {
   if (phase === "loading") {
     return (
       <div className="flex flex-col items-center justify-center h-full gap-3 sm:gap-4 px-4">
-        <img src={mascotThinking} alt="Pylo thinking" className="w-16 h-16 sm:w-24 sm:h-24 object-contain animate-bounce" />
-        <Loader2 className="w-6 h-6 sm:w-8 sm:h-8 animate-spin text-primary" />
+        <img src={mascotThinking} alt="Pylo thinking" className="w-16 h-16 sm:w-20 sm:h-20 object-contain pylo-thinking" />
+        <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin text-primary" />
         <p className="font-display font-bold text-foreground text-sm sm:text-base">Pylo is creating your quiz...</p>
         <p className="text-xs sm:text-sm text-muted-foreground">This might take a few seconds</p>
       </div>
@@ -519,7 +519,7 @@ const QuizPanel = ({ userName, chatContext }: QuizPanelProps) => {
 
       <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4 sm:space-y-6">
         <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center">
-          <img src={mascot} alt="Pylo" className="w-14 h-14 sm:w-20 sm:h-20 object-contain mx-auto mb-2 sm:mb-3" />
+          <img src={mascot} alt="Pylo" className="w-14 h-14 sm:w-20 sm:h-20 object-contain mx-auto mb-2 sm:mb-3 pylo-appear pylo-idle" />
           <div className="text-4xl sm:text-5xl font-display font-black text-primary">{pct}%</div>
           <p className="font-display font-bold text-sm sm:text-lg text-foreground mt-1">{score} / {total} correct</p>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1 flex items-center justify-center gap-1.5">
