@@ -136,7 +136,7 @@ const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading
         {messages.map((msg, idx) => (
           <motion.div key={msg.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex gap-2 sm:gap-3 ${msg.role === "user" ? "flex-row-reverse" : ""} group`}>
             {msg.role === "assistant" && (
-              <img src={mascot} alt="Pylo" className="w-6 h-6 sm:w-8 sm:h-8 object-contain flex-shrink-0 mt-1" />
+              <img src={mascot} alt="Pylo" className="w-6 h-6 sm:w-8 sm:h-8 object-contain flex-shrink-0 mt-1 pylo-idle" />
             )}
             <div className="max-w-[85%] sm:max-w-[80%]">
               <div className={`rounded-2xl px-3 sm:px-4 py-2.5 sm:py-3 ${
