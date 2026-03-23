@@ -116,13 +116,13 @@ const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading
 
       <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4">
         {messages.length === 0 && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center justify-center h-full gap-3 sm:gap-4 text-center px-2">
-            <img src={mascot} alt="Pylo" className="w-16 h-16 sm:w-24 sm:h-24 object-contain animate-float" />
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center justify-center h-full gap-2 text-center px-4 py-6">
+            <img src={mascot} alt="Pylo" className="w-14 h-14 sm:w-20 sm:h-20 object-contain pylo-appear pylo-idle" />
             <div>
-              <h3 className="font-display font-bold text-base sm:text-lg text-foreground">Hey {userName}! Ready to study?</h3>
-              <p className="text-muted-foreground text-xs sm:text-sm mt-1">Send a message, upload an image, or share a document</p>
+              <h3 className="font-display font-bold text-sm sm:text-lg text-foreground">Hey {userName}! Ready to study?</h3>
+              <p className="text-muted-foreground text-xs sm:text-sm mt-0.5">Send a message, upload an image, or share a document</p>
             </div>
-            <div className="flex flex-wrap gap-2 justify-center mt-2">
+            <div className="flex flex-wrap gap-2 justify-center mt-1">
               {quickPrompts.map((qp) => (
                 <motion.button key={qp.label} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => onSendMessage(qp.prompt)}
                   className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl bg-secondary text-secondary-foreground font-body font-semibold text-xs sm:text-sm shadow-card hover:shadow-soft transition-all">
