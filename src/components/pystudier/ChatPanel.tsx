@@ -47,8 +47,19 @@ const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading
   const [editingMessageIdx, setEditingMessageIdx] = useState<number | null>(null);
   const [editContent, setEditContent] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const autoResize = useCallback(() => {
+    const ta = textareaRef.current;
+    if (ta) {
+      ta.style.height = "auto";
+      ta.style.height = Math.min(ta.scrollHeight, 140) + "px";
+    }
+  }, []);
+
+  useEffect(() => { autoResize(); }, [input, autoResize]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
