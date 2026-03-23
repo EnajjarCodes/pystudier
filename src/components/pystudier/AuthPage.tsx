@@ -49,9 +49,6 @@ const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
         const { error } = await supabase.auth.signUp({
           email,
           password,
-          options: {
-            data: { full_name: displayName.trim() },
-          },
         });
         if (error) throw error;
         toast.success("A verification code has been sent to your email!");
