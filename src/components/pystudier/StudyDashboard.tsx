@@ -320,7 +320,7 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
             <ChatPanel userName={userName} messages={messages} onSendMessage={handleSendMessage} onEditMessage={handleEditMessage} isLoading={isLoading} />
           </div>
           <div className={`flex-1 ${activeTab === "quiz" ? "flex" : "hidden"} flex-col min-w-0`}>
-            <QuizPanel userName={userName} chatContext={chatContext} />
+            <QuizPanel userName={userName} userId={userId} chatContext={chatContext} />
           </div>
           <div className={`flex-1 ${activeTab === "dashboard" ? "flex" : "hidden"} flex-col min-w-0`}>
             <ProgressDashboard userId={userId} />
