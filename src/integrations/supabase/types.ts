@@ -103,6 +103,36 @@ export type Database = {
         }
         Relationships: []
       }
+      study_progress: {
+        Row: {
+          activity_type: string
+          created_at: string
+          id: string
+          score: number | null
+          topic: string | null
+          total: number | null
+          user_id: string
+        }
+        Insert: {
+          activity_type: string
+          created_at?: string
+          id?: string
+          score?: number | null
+          topic?: string | null
+          total?: number | null
+          user_id: string
+        }
+        Update: {
+          activity_type?: string
+          created_at?: string
+          id?: string
+          score?: number | null
+          topic?: string | null
+          total?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
