@@ -112,21 +112,22 @@ const QuizPanel = ({ userName, userId, chatContext }: QuizPanelProps) => {
     }
   };
 
+  const normalizeAnswer = (s: string) => s.toLowerCase().trim().replace(/[.,;:!?'"()]/g, "").replace(/\s+/g, " ");
+
   const checkAnswerWithAI = async (questionIdx: number, answer: string) => {
     const q = questions[questionIdx];
-    // Use AI for ALL types
     try {
       const { data, error: fnError } = await supabase.functions.invoke("check-answer", {
         body: { userAnswer: answer, correctAnswer: q.correctAnswer, question: q.question },
       });
       if (fnError || data?.error) {
-        const correct = answer.toLowerCase().trim() === q.correctAnswer.toLowerCase().trim();
+        const correct = normalizeAnswer(answer) === normalizeAnswer(q.correctAnswer);
         setAiResults((prev) => ({ ...prev, [questionIdx]: { correct, explanation: correct ? "" : q.explanation } }));
       } else {
         setAiResults((prev) => ({ ...prev, [questionIdx]: { correct: data.correct, explanation: data.correct ? "" : (data.explanation || q.explanation) } }));
       }
     } catch {
-      const correct = answer.toLowerCase().trim() === q.correctAnswer.toLowerCase().trim();
+      const correct = normalizeAnswer(answer) === normalizeAnswer(q.correctAnswer);
       setAiResults((prev) => ({ ...prev, [questionIdx]: { correct, explanation: correct ? "" : q.explanation } }));
     }
   };
