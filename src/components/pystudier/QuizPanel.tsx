@@ -552,7 +552,7 @@ const QuizPanel = ({ userName, userId, chatContext }: QuizPanelProps) => {
             } else if (aiResults[i]) {
               correct = aiResults[i].correct;
             } else {
-              correct = (userAnswers[i] || "").toLowerCase().trim() === q.correctAnswer.toLowerCase().trim();
+              correct = normalizeAnswer(userAnswers[i] || "") === normalizeAnswer(q.correctAnswer);
             }
             return (
               <div key={i} className={`p-2.5 sm:p-3 rounded-xl border ${correct ? "border-primary/30 bg-primary/5" : "border-destructive/30 bg-destructive/5"}`}>
