@@ -194,7 +194,7 @@ const QuizPanel = ({ userName, userId, chatContext }: QuizPanelProps) => {
         if (result && !result.correct) return { question: q.question, userAnswer: userAnswers[i] || "", correctAnswer: q.correctAnswer };
         if (!result) {
           const ua = userAnswers[i] || "";
-          if (ua.toLowerCase().trim() !== q.correctAnswer.toLowerCase().trim()) return { question: q.question, userAnswer: ua, correctAnswer: q.correctAnswer };
+          if (normalizeAnswer(ua) !== normalizeAnswer(q.correctAnswer)) return { question: q.question, userAnswer: ua, correctAnswer: q.correctAnswer };
         }
         return null;
       })
