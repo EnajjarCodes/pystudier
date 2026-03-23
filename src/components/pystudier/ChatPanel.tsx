@@ -252,8 +252,10 @@ const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading
               <FileText className="w-4 h-4 sm:w-5 sm:h-5" />
             </motion.button>
           </div>
-          <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask Pylo anything..."
-            className="flex-1 min-w-0 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border border-border bg-background text-foreground font-body text-xs sm:text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-muted-foreground" />
+          <textarea ref={textareaRef} value={input} onChange={(e) => setInput(e.target.value)} placeholder="Ask Pylo anything..."
+            rows={1}
+            onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSubmit(e); } }}
+            className="flex-1 min-w-0 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border border-border bg-background text-foreground font-body text-xs sm:text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-muted-foreground resize-none overflow-y-auto" style={{ maxHeight: 140 }} />
           <motion.button type="submit" disabled={isLoading || (!input.trim() && attachedImages.length === 0 && !attachedFile)} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
             className="p-2.5 sm:p-3 rounded-xl gradient-primary text-primary-foreground shadow-soft disabled:opacity-40 disabled:cursor-not-allowed transition-all flex-shrink-0">
             <Send className="w-4 h-4 sm:w-5 sm:h-5" />
