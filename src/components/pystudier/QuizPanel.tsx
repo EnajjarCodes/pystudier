@@ -372,7 +372,7 @@ const QuizPanel = ({ userName, userId, chatContext }: QuizPanelProps) => {
 
     const isCorrect = q.type === "matching"
       ? (q.matchPairs || []).every((p) => (matchingAnswers[currentQ] || {})[p.left] === p.right)
-      : aiResults[currentQ]?.correct ?? ((userAnswers[currentQ] || "").toLowerCase().trim() === q.correctAnswer.toLowerCase().trim());
+      : aiResults[currentQ]?.correct ?? (normalizeAnswer(userAnswers[currentQ] || "") === normalizeAnswer(q.correctAnswer));
 
     return (
       <div className="flex flex-col h-full">
