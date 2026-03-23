@@ -95,9 +95,11 @@ const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading
     }
   };
 
-  const quickPrompts = [
-    { label: "Summarize this", icon: Sparkles, prompt: "Please summarize the key points from what we've discussed." },
-    { label: "Make notes", icon: FileText, prompt: "Create organized study notes from our conversation." },
+  const quickActions = [
+    { label: "Create Quiz", icon: Sparkles, prompt: "Create a quiz about " },
+    { label: "Explain a Topic", icon: Sparkles, prompt: "Explain the concept of " },
+    { label: "Summarize Text", icon: Sparkles, prompt: "Summarize the following: " },
+    { label: "Make Notes", icon: FileText, prompt: "Create organized study notes about " },
   ];
 
   return (
