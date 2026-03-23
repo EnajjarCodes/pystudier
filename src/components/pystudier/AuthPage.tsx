@@ -42,10 +42,6 @@ const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
   const handleEmailAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim() || !password.trim()) return;
-    if (mode === "signup" && !displayName.trim()) {
-      toast.error("Please enter your name");
-      return;
-    }
 
     setLoading(true);
     try {
