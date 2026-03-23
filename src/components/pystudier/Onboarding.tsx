@@ -63,7 +63,8 @@ const Onboarding = ({ onComplete, existingName }: OnboardingProps) => {
   // Pylo intro text typewriter
   const [introText, setIntroText] = useState("");
   const [introDone, setIntroDone] = useState(false);
-  const fullIntro = `Hey${existingName ? ` ${existingName}` : ""}! I'm Pylo, your study buddy! I'm here to help you learn, take notes, and ace your exams! Let me get to know you a bit better.`;
+  const displayName = name.trim() || existingName || "";
+  const fullIntro = `Hey${displayName ? ` ${displayName}` : ""}! I'm Pylo, your study buddy! 🦉 I'm here to help you learn, take notes, and ace your exams! Let me get to know you a bit better.`;
 
   useEffect(() => {
     if (step === 1) {
