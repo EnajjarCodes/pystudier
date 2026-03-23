@@ -278,17 +278,7 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
           <span className="font-display font-black text-primary text-base sm:text-lg">Py</span>
           <span className="font-display font-black text-coral text-base sm:text-lg">studier</span>
         </div>
-        <div className="ml-auto">
-          <motion.button
-            onClick={openStudyRooms}
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl gradient-primary text-primary-foreground font-display font-bold text-xs shadow-soft"
-          >
-            <Users className="w-3.5 h-3.5" />
-            Study Rooms
-          </motion.button>
-        </div>
+        <div className="ml-auto" />
       </header>
 
       <div className="flex flex-1 overflow-hidden">

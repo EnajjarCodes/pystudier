@@ -519,7 +519,7 @@ const QuizPanel = ({ userName, chatContext }: QuizPanelProps) => {
 
       <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4 sm:space-y-6">
         <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center">
-          <img src={mascot} alt="Pylo" className="w-14 h-14 sm:w-20 sm:h-20 object-contain mx-auto mb-2 sm:mb-3" />
+          <img src={mascot} alt="Pylo" className="w-14 h-14 sm:w-20 sm:h-20 object-contain mx-auto mb-2 sm:mb-3 pylo-appear pylo-idle" />
           <div className="text-4xl sm:text-5xl font-display font-black text-primary">{pct}%</div>
           <p className="font-display font-bold text-sm sm:text-lg text-foreground mt-1">{score} / {total} correct</p>
           <p className="text-xs sm:text-sm text-muted-foreground mt-1 flex items-center justify-center gap-1.5">

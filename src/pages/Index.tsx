@@ -4,6 +4,7 @@ import AuthPage from "@/components/pystudier/AuthPage";
 import StudyDashboard from "@/components/pystudier/StudyDashboard";
 import Onboarding from "@/components/pystudier/Onboarding";
 import type { Session } from "@supabase/supabase-js";
+import mascotImg from "@/assets/mascot.png";
 
 const Index = () => {
   const [session, setSession] = useState<Session | null>(null);

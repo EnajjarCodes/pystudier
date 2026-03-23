@@ -195,7 +195,7 @@ const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading
 
         {isLoading && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex gap-2 sm:gap-3">
-            <img src={mascotThinking} alt="Pylo thinking" className="w-6 h-6 sm:w-8 sm:h-8 object-contain animate-bounce-gentle" />
+            <img src={mascotThinking} alt="Pylo thinking" className="w-6 h-6 sm:w-8 sm:h-8 object-contain pylo-thinking" />
             <div className="bg-card shadow-card rounded-2xl rounded-bl-md px-3 sm:px-4 py-2.5 sm:py-3 flex items-center gap-2">
               <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 animate-spin text-primary" />
               <span className="text-xs sm:text-sm text-muted-foreground font-body">Pylo is thinking...</span>
