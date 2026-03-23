@@ -223,8 +223,7 @@ const QuizPanel = ({ userName, userId, chatContext }: QuizPanelProps) => {
       } else if (aiResults[i]) {
         if (aiResults[i].correct) correct++;
       } else {
-        const ua = (userAnswers[i] || "").toLowerCase().trim();
-        if (ua === q.correctAnswer.toLowerCase().trim()) correct++;
+        if (normalizeAnswer(userAnswers[i] || "") === normalizeAnswer(q.correctAnswer)) correct++;
       }
     });
     return correct;
