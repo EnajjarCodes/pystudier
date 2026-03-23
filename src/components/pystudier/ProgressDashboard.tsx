@@ -1,17 +1,62 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Trophy, Flame, CheckCircle2 } from "lucide-react";
-import mascot from "@/assets/mascot.png";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ProgressDashboardProps {
   userId: string;
 }
 
 const ProgressDashboard = ({ userId }: ProgressDashboardProps) => {
-  // Placeholder metrics - these would be computed from real data
+  const [quizzesPassed, setQuizzesPassed] = useState(0);
+  const [totalCorrect, setTotalCorrect] = useState(0);
+  const [streak, setStreak] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProgress = async () => {
+      try {
+        const { data } = await supabase
+          .from("study_progress" as any)
+          .select("*")
+          .eq("user_id", userId)
+          .order("created_at", { ascending: false });
+
+        if (data && Array.isArray(data)) {
+          // Quizzes where score >= 70%
+          const quizzes = data.filter((d: any) => d.activity_type === "quiz_completed");
+          const passed = quizzes.filter((d: any) => d.total > 0 && (d.score / d.total) >= 0.7).length;
+          setQuizzesPassed(passed);
+
+          // Total correct answers
+          const correct = quizzes.reduce((sum: number, d: any) => sum + (d.score || 0), 0);
+          setTotalCorrect(correct);
+
+          // Study streak: consecutive days with activity
+          const dates = new Set(data.map((d: any) => new Date(d.created_at).toDateString()));
+          let s = 0;
+          const today = new Date();
+          for (let i = 0; i < 365; i++) {
+            const d = new Date(today);
+            d.setDate(d.getDate() - i);
+            if (dates.has(d.toDateString())) {
+              s++;
+            } else if (i > 0) {
+              break;
+            }
+          }
+          setStreak(s);
+        }
+      } catch {}
+      setLoading(false);
+    };
+    fetchProgress();
+  }, [userId]);
+
   const metrics = [
-    { label: "Cards Mastered", value: 0, icon: CheckCircle2, emoji: "✅", color: "text-primary" },
-    { label: "Quizzes Passed", value: 0, icon: Trophy, emoji: "🏆", color: "text-coral" },
-    { label: "Study Streak", value: 0, icon: Flame, emoji: "🔥", color: "text-sunshine" },
+    { label: "Questions Correct", value: totalCorrect, emoji: "✅", color: "text-primary" },
+    { label: "Quizzes Passed", value: quizzesPassed, emoji: "🏆", color: "text-coral" },
+    { label: "Study Streak", value: streak, emoji: "🔥", color: "text-sunshine", suffix: streak === 1 ? " day" : " days" },
   ];
 
   return (
@@ -25,11 +70,6 @@ const ProgressDashboard = ({ userId }: ProgressDashboardProps) => {
       </div>
 
       <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4 sm:space-y-6">
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center gap-3">
-          <img src={mascot} alt="Pylo" className="w-14 h-14 sm:w-20 sm:h-20 object-contain pylo-appear pylo-idle" />
-          <p className="font-display font-bold text-foreground text-center text-sm sm:text-base">Keep it up! 💪</p>
-        </motion.div>
-
         <div className="grid gap-3">
           {metrics.map((m, i) => (
             <motion.div
@@ -42,17 +82,21 @@ const ProgressDashboard = ({ userId }: ProgressDashboardProps) => {
               <div className="text-3xl sm:text-4xl">{m.emoji}</div>
               <div className="flex-1">
                 <p className="text-xs sm:text-sm text-muted-foreground font-body">{m.label}</p>
-                <p className={`text-2xl sm:text-3xl font-display font-black ${m.color}`}>{m.value}</p>
+                <p className={`text-2xl sm:text-3xl font-display font-black ${m.color}`}>
+                  {loading ? "—" : m.value}{!loading && m.suffix ? m.suffix : ""}
+                </p>
               </div>
             </motion.div>
           ))}
         </div>
 
-        <div className="p-4 rounded-2xl bg-secondary/50 border border-border text-center">
-          <p className="text-xs sm:text-sm text-muted-foreground font-body">
-            Progress tracking is coming soon! Complete quizzes and flashcards to see your stats here.
-          </p>
-        </div>
+        {!loading && totalCorrect === 0 && (
+          <div className="p-4 rounded-2xl bg-secondary/50 border border-border text-center">
+            <p className="text-xs sm:text-sm text-muted-foreground font-body">
+              Complete quizzes to see your stats here! 📊
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
