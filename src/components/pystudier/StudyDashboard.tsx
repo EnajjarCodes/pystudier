@@ -274,7 +274,7 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
           {chatSidebarOpen ? <X className="w-4 h-4 sm:w-5 sm:h-5" /> : <Menu className="w-4 h-4 sm:w-5 sm:h-5" />}
         </button>
         <img src={mascot} alt="Pylo" className="w-6 h-6 sm:w-8 sm:h-8 object-contain pylo-idle" />
-        <div className="flex items-baseline gap-0.5">
+        <div className="flex items-baseline">
           <span className="font-display font-black text-primary text-base sm:text-lg">Py</span>
           <span className="font-display font-black text-coral text-base sm:text-lg">studier</span>
         </div>

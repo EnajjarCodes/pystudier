@@ -208,7 +208,7 @@ const AuthPage = ({ onAuthSuccess }: AuthPageProps) => {
           transition={{ scale: { type: "spring", stiffness: 200 }, y: { duration: 3, repeat: Infinity } }}
         />
 
-        <div className="flex items-center gap-1">
+        <div className="flex items-center">
           <span className="text-2xl font-display font-black text-primary">Py</span>
           <span className="text-2xl font-display font-black text-coral">studier</span>
         </div>
