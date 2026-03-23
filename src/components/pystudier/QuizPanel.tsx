@@ -158,6 +158,19 @@ const QuizPanel = ({ userName, userId, chatContext }: QuizPanelProps) => {
   const finishQuiz = async () => {
     setPhase("results");
 
+    // Save quiz progress
+    const score = getScore();
+    try {
+      await supabase.from("study_progress" as any).insert({
+        user_id: userId,
+        activity_type: "quiz_completed",
+        score,
+        total: questions.length,
+        topic: setup.topic,
+      });
+    } catch {}
+
+
     // Check all unchecked answers with AI
     const uncheckedPromises: Promise<void>[] = [];
     questions.forEach((q, i) => {
