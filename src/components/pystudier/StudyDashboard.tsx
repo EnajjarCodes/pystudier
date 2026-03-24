@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, FileText, Brain, Menu, X, BarChart3, Users } from "lucide-react";
+import { MessageCircle, FileText, Brain, Menu, X, BarChart3 } from "lucide-react";
 import ChatPanel, { Message } from "./ChatPanel";
 import NotesPanel, { Note } from "./NotesPanel";
 import QuizPanel from "./QuizPanel";
