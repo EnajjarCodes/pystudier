@@ -53,7 +53,7 @@ const DIFFICULTIES = [
   { id: "hard" as const, label: "Hard", icon: Flame, desc: "Complex reasoning" },
 ];
 
-const QuizPanel = ({ userName, userId, chatContext }: QuizPanelProps) => {
+const QuizPanel = ({ userName, userId, chatContext, onQuizComplete }: QuizPanelProps) => {
   const [phase, setPhase] = useState<QuizPhase>("setup");
   const [setup, setSetup] = useState<QuizSetup>({
     topic: "",
