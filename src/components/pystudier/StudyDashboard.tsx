@@ -194,7 +194,7 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
     }
 
     conversationRef.current.push({ role: "user", content: userContent });
-    await saveMessage(convId, "user", userMessage.content, images, file?.name);
+    await saveMessage(convId, "user", userMessage.content);
 
     if (conversationRef.current.length === 1) {
       generateAITitle(content || (file ? file.name : "New Chat"), convId);
