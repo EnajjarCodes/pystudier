@@ -87,8 +87,8 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
     loadConversations();
   };
 
-  const saveMessage = async (conversationId: string, role: string, content: string, images?: string[], fileName?: string) => {
-    await supabase.from("messages").insert({ conversation_id: conversationId, user_id: userId, role, content, images: images || null, file_name: fileName || null });
+  const saveMessage = async (conversationId: string, role: string, content: string) => {
+    await supabase.from("messages").insert({ conversation_id: conversationId, role, content });
   };
 
   const generateAITitle = async (message: string, convId: string) => {
