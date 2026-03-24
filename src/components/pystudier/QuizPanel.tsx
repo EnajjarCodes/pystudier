@@ -36,6 +36,7 @@ interface QuizPanelProps {
   userName: string;
   userId: string;
   chatContext?: string;
+  onQuizComplete?: (score: number, total: number, topic: string) => void;
 }
 
 const MAX_QUESTIONS = 50;
