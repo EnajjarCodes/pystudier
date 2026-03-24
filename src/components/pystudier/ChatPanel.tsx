@@ -116,11 +116,7 @@ const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading
   return (
     <div className="flex flex-col h-full">
       <div className="flex items-center gap-3 p-3 sm:p-4 border-b border-border bg-card/80 backdrop-blur-sm flex-shrink-0">
-        <img src={mascot} alt="Pylo" className="w-8 h-8 sm:w-10 sm:h-10 object-contain pylo-idle" />
-        <div>
-          <h2 className="font-display font-bold text-foreground text-sm sm:text-base">Pylo</h2>
-          <p className="text-[10px] sm:text-xs text-muted-foreground">Your AI Study Buddy</p>
-        </div>
+        <h2 className="font-display font-bold text-foreground text-sm sm:text-base">Chat</h2>
         <div className="ml-auto flex items-center gap-1.5">
           <Wifi className="w-3 h-3 text-primary" />
           <span className="text-[10px] sm:text-xs text-muted-foreground">Online</span>

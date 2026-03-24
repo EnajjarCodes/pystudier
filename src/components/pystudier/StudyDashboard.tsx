@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageCircle, FileText, Brain, Menu, X, BarChart3, Users } from "lucide-react";
+import { MessageCircle, FileText, Brain, Menu, X, BarChart3 } from "lucide-react";
 import ChatPanel, { Message } from "./ChatPanel";
 import NotesPanel, { Note } from "./NotesPanel";
 import QuizPanel from "./QuizPanel";
@@ -10,7 +10,7 @@ import { streamChat } from "@/lib/ai-stream";
 import { extractFileContent, extractImageContent } from "@/lib/content-extractor";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import mascot from "@/assets/mascot.png";
+
 
 const CHATROOM_URL = import.meta.env.VITE_CHATROOM_URL || "https://041378b9-921d-4592-a288-68dfbdadac56-00-3dweh90a1cs1g.picard.replit.dev";
 
@@ -87,8 +87,8 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
     loadConversations();
   };
 
-  const saveMessage = async (conversationId: string, role: string, content: string, images?: string[], fileName?: string) => {
-    await supabase.from("messages").insert({ conversation_id: conversationId, user_id: userId, role, content, images: images || null, file_name: fileName || null });
+  const saveMessage = async (conversationId: string, role: string, content: string) => {
+    await supabase.from("messages").insert({ conversation_id: conversationId, role, content });
   };
 
   const generateAITitle = async (message: string, convId: string) => {
@@ -194,7 +194,7 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
     }
 
     conversationRef.current.push({ role: "user", content: userContent });
-    await saveMessage(convId, "user", userMessage.content, images, file?.name);
+    await saveMessage(convId, "user", userMessage.content);
 
     if (conversationRef.current.length === 1) {
       generateAITitle(content || (file ? file.name : "New Chat"), convId);
@@ -273,7 +273,7 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
         <button onClick={() => setChatSidebarOpen(!chatSidebarOpen)} className="p-1.5 sm:p-2 rounded-xl hover:bg-secondary transition-colors">
           {chatSidebarOpen ? <X className="w-4 h-4 sm:w-5 sm:h-5" /> : <Menu className="w-4 h-4 sm:w-5 sm:h-5" />}
         </button>
-        <img src={mascot} alt="Pylo" className="w-6 h-6 sm:w-8 sm:h-8 object-contain pylo-idle" />
+        
         <div className="flex items-baseline">
           <span className="font-display font-black text-primary text-base sm:text-lg">Py</span>
           <span className="font-display font-black text-coral text-base sm:text-lg">studier</span>
