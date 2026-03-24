@@ -10,7 +10,7 @@ import { streamChat } from "@/lib/ai-stream";
 import { extractFileContent, extractImageContent } from "@/lib/content-extractor";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import mascot from "@/assets/mascot.png";
+
 
 const CHATROOM_URL = import.meta.env.VITE_CHATROOM_URL || "https://041378b9-921d-4592-a288-68dfbdadac56-00-3dweh90a1cs1g.picard.replit.dev";
 
