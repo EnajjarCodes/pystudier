@@ -172,6 +172,9 @@ const QuizPanel = ({ userName, userId, chatContext, onQuizComplete }: QuizPanelP
       });
     } catch {}
 
+    // Notify parent (session flow) of completion
+    onQuizComplete?.(score, questions.length, setup.topic);
+
 
     // Check all unchecked answers with AI
     const uncheckedPromises: Promise<void>[] = [];
