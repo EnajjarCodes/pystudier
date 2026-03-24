@@ -36,6 +36,7 @@ interface QuizPanelProps {
   userName: string;
   userId: string;
   chatContext?: string;
+  onQuizComplete?: (score: number, total: number, topic: string) => void;
 }
 
 const MAX_QUESTIONS = 50;
@@ -52,7 +53,7 @@ const DIFFICULTIES = [
   { id: "hard" as const, label: "Hard", icon: Flame, desc: "Complex reasoning" },
 ];
 
-const QuizPanel = ({ userName, userId, chatContext }: QuizPanelProps) => {
+const QuizPanel = ({ userName, userId, chatContext, onQuizComplete }: QuizPanelProps) => {
   const [phase, setPhase] = useState<QuizPhase>("setup");
   const [setup, setSetup] = useState<QuizSetup>({
     topic: "",
@@ -170,6 +171,9 @@ const QuizPanel = ({ userName, userId, chatContext }: QuizPanelProps) => {
         topic: setup.topic,
       });
     } catch {}
+
+    // Notify parent (session flow) of completion
+    onQuizComplete?.(score, questions.length, setup.topic);
 
 
     // Check all unchecked answers with AI
