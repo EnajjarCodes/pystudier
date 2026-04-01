@@ -23,6 +23,8 @@ interface ChatPanelProps {
   onSendMessage: (content: string, images?: string[], file?: File | null) => void;
   onEditMessage?: (messageIndex: number, newContent: string) => void;
   isLoading: boolean;
+  hideQuickActions?: boolean;
+  topMessage?: string;
 }
 
 const CopyButton = ({ text }: { text: string }) => {
@@ -40,7 +42,7 @@ const CopyButton = ({ text }: { text: string }) => {
   );
 };
 
-const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading }: ChatPanelProps) => {
+const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading, hideQuickActions, topMessage }: ChatPanelProps) => {
   const [input, setInput] = useState("");
   const [attachedImages, setAttachedImages] = useState<string[]>([]);
   const [attachedFile, setAttachedFile] = useState<File | null>(null);
@@ -124,6 +126,11 @@ const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading
       </div>
 
       <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4">
+        {topMessage && (
+          <div className="text-center">
+            <span className="text-[10px] sm:text-xs text-muted-foreground font-semibold">{topMessage}</span>
+          </div>
+        )}
         {messages.length === 0 && (
           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center justify-center h-full gap-2 text-center px-4 py-6">
             <img src={mascot} alt="Pylo" className="w-14 h-14 sm:w-20 sm:h-20 object-contain pylo-appear pylo-idle" />
@@ -131,14 +138,16 @@ const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading
               <h3 className="font-display font-bold text-sm sm:text-lg text-foreground">Hey {userName}! Ready to study?</h3>
               <p className="text-muted-foreground text-xs sm:text-sm mt-0.5">Send a message, upload an image, or share a document</p>
             </div>
-            <div className="flex flex-wrap gap-2 justify-center mt-2">
-              {quickActions.map((qa) => (
-                <motion.button key={qa.label} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setInput(qa.prompt)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-secondary-foreground font-body font-medium text-xs shadow-card hover:shadow-soft transition-all border border-border">
-                  <qa.icon className="w-3 h-3" />{qa.label}
-                </motion.button>
-              ))}
-            </div>
+            {!hideQuickActions && (
+              <div className="flex flex-wrap gap-2 justify-center mt-2">
+                {quickActions.map((qa) => (
+                  <motion.button key={qa.label} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={() => setInput(qa.prompt)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-secondary text-secondary-foreground font-body font-medium text-xs shadow-card hover:shadow-soft transition-all border border-border">
+                    <qa.icon className="w-3 h-3" />{qa.label}
+                  </motion.button>
+                ))}
+              </div>
+            )}
           </motion.div>
         )}
 

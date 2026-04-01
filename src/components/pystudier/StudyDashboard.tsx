@@ -163,8 +163,8 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
                 {sessions.length === 0 ? (
                   <div className="text-center py-8 sm:py-12">
                     <BookOpen className="w-10 h-10 sm:w-12 sm:h-12 text-muted-foreground mx-auto mb-3" />
-                    <p className="font-display font-bold text-foreground text-sm sm:text-base">No sessions yet</p>
-                    <p className="text-xs sm:text-sm text-muted-foreground mt-1">Start studying to create your first session!</p>
+                    <p className="font-display font-bold text-foreground text-sm sm:text-base">Let's start your first study session</p>
+                    <p className="text-xs sm:text-sm text-muted-foreground mt-1">Tap "Start Studying" above to begin!</p>
                   </div>
                 ) : (
                   sessions.map((session, i) => (
