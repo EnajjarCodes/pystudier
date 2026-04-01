@@ -42,7 +42,7 @@ const CopyButton = ({ text }: { text: string }) => {
   );
 };
 
-const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading }: ChatPanelProps) => {
+const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading, hideQuickActions, topMessage }: ChatPanelProps) => {
   const [input, setInput] = useState("");
   const [attachedImages, setAttachedImages] = useState<string[]>([]);
   const [attachedFile, setAttachedFile] = useState<File | null>(null);
