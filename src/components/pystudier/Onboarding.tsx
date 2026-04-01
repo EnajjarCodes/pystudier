@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, ChevronDown, Check } from "lucide-react";
+import { ArrowRight, Check } from "lucide-react";
 import { isValidName } from "@/lib/profanity-filter";
 import mascotWave from "@/assets/mascot-wave.png";
 
