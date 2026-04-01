@@ -26,9 +26,6 @@ const Onboarding = ({ onComplete, existingName }: OnboardingProps) => {
   const [name, setName] = useState(existingName || "");
   const [nameError, setNameError] = useState("");
   const [hardestSubject, setHardestSubject] = useState("");
-  const [weeklyGoal, setWeeklyGoal] = useState(5);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [expandedParent, setExpandedParent] = useState<string | null>(null);
 
   // Pylo intro text typewriter
   const [introText, setIntroText] = useState("");
