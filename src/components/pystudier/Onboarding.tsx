@@ -155,41 +155,22 @@ const Onboarding = ({ onComplete, existingName }: OnboardingProps) => {
                   <p className="text-base sm:text-lg font-display font-bold text-foreground text-center mb-4">
                     What subject do you find the hardest?
                   </p>
-                  <div className="relative mb-4">
-                    <button
-                      onClick={() => setDropdownOpen(!dropdownOpen)}
-                      className="w-full px-4 py-3 rounded-xl border-2 border-primary/20 bg-secondary/50 text-foreground font-body text-sm text-left flex items-center justify-between focus:outline-none focus:border-primary transition-all"
-                    >
-                      <span className={hardestSubject ? "text-foreground" : "text-muted-foreground"}>
-                        {hardestSubject || "Select a subject..."}
-                      </span>
-                      <ChevronDown className={`w-4 h-4 transition-transform ${dropdownOpen ? "rotate-180" : ""}`} />
-                    </button>
-                    {dropdownOpen && (
-                      <div className="absolute z-20 mt-1 w-full bg-card border border-border rounded-xl shadow-elevated max-h-56 overflow-y-auto">
-                        {SUBJECT_TREE.map((group) => (
-                          <div key={group.parent}>
-                            <button
-                              onClick={() => setExpandedParent(expandedParent === group.parent ? null : group.parent)}
-                              className="w-full px-4 py-2.5 text-left text-sm font-display font-bold text-foreground hover:bg-secondary flex items-center justify-between"
-                            >
-                              {group.parent}
-                              <ChevronDown className={`w-3 h-3 transition-transform ${expandedParent === group.parent ? "rotate-180" : ""}`} />
-                            </button>
-                            {expandedParent === group.parent && group.children.map((child) => (
-                              <button
-                                key={child}
-                                onClick={() => { setHardestSubject(child); setDropdownOpen(false); }}
-                                className={`w-full px-8 py-2 text-left text-sm font-body hover:bg-primary/10 transition-colors flex items-center justify-between ${hardestSubject === child ? "text-primary font-semibold" : "text-foreground"}`}
-                              >
-                                {child}
-                                {hardestSubject === child && <Check className="w-3.5 h-3.5 text-primary" />}
-                              </button>
-                            ))}
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                  <div className="grid grid-cols-2 gap-2 mb-4">
+                    {SUBJECTS.map((subject) => (
+                      <motion.button
+                        key={subject}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setHardestSubject(subject)}
+                        className={`p-3 rounded-xl border-2 transition-all text-left flex items-center justify-between ${
+                          hardestSubject === subject
+                            ? "border-primary bg-primary/10 shadow-soft"
+                            : "border-border bg-card hover:border-primary/40"
+                        }`}
+                      >
+                        <span className="font-display font-bold text-sm text-foreground">{subject}</span>
+                        {hardestSubject === subject && <Check className="w-3.5 h-3.5 text-primary" />}
+                      </motion.button>
+                    ))}
                   </div>
                   <motion.button
                     whileHover={{ scale: 1.02 }}
