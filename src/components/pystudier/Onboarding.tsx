@@ -9,39 +9,9 @@ interface OnboardingProps {
   existingName?: string;
 }
 
-const SUBJECT_TREE = [
-  {
-    parent: "Math",
-    children: ["Algebra", "Calculus", "Trigonometry", "Statistics"],
-  },
-  {
-    parent: "Science",
-    children: ["Biology", "Chemistry", "Physics"],
-  },
-  {
-    parent: "Computer Science",
-    children: ["Programming", "Data Science"],
-  },
-  {
-    parent: "English",
-    children: ["Literature"],
-  },
-  {
-    parent: "Business",
-    children: ["Economics", "Accounting", "Marketing"],
-  },
-  {
-    parent: "Social Sciences",
-    children: ["Psychology", "Philosophy", "Political Science", "History", "Geography"],
-  },
-  {
-    parent: "Arts",
-    children: ["Art", "Music"],
-  },
-  {
-    parent: "Professional",
-    children: ["Law", "Medicine", "Engineering"],
-  },
+const SUBJECTS = [
+  "Math", "Science", "Computer Science", "English",
+  "Business", "Social Sciences", "Arts", "Professional",
 ];
 
 const WEEKLY_GOALS = [
