@@ -23,6 +23,8 @@ interface ChatPanelProps {
   onSendMessage: (content: string, images?: string[], file?: File | null) => void;
   onEditMessage?: (messageIndex: number, newContent: string) => void;
   isLoading: boolean;
+  hideQuickActions?: boolean;
+  topMessage?: string;
 }
 
 const CopyButton = ({ text }: { text: string }) => {
