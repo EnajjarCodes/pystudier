@@ -32,7 +32,9 @@ const SUBJECTS = [
 
 const MAX_FILES = 10;
 
-const SessionFlow = ({ sessionId, userName, userId, onBack }: SessionFlowProps) => {
+const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: SessionFlowProps) => {
+  const [currentSessionId, setCurrentSessionId] = useState(sessionId || "");
+  const [subjectDropdownOpen, setSubjectDropdownOpen] = useState(false);
   const [step, setStep] = useState<SessionStep>("subject");
   const [selectedSubject, setSelectedSubject] = useState("");
   const [topicInput, setTopicInput] = useState("");
