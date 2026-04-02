@@ -157,14 +157,15 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
 
   const handleQuizComplete = async (score: number, total: number, topic: string) => {
     setQuizResult({ score, total, topic });
-    await supabase.from("study_sessions" as any).update({
-      quiz_score: score,
-      quiz_total: total,
-      quiz_topic: topic,
-      current_step: "summary",
-      title: topic || "Study Session",
-      updated_at: new Date().toISOString(),
-    }).eq("id", sessionId);
+    if (currentSessionId) {
+      await supabase.from("study_sessions" as any).update({
+        quiz_score: score,
+        quiz_total: total,
+        quiz_topic: topic,
+        current_step: "summary",
+        updated_at: new Date().toISOString(),
+      }).eq("id", currentSessionId);
+    }
   };
 
   const goToSummary = async () => {
