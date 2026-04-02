@@ -18,10 +18,11 @@ import { ChevronDown } from "lucide-react";
 type SessionStep = "subject" | "topic" | "quiz" | "summary" | "continue" | "chat";
 
 interface SessionFlowProps {
-  sessionId: string;
+  sessionId?: string;
   userName: string;
   userId: string;
   onBack: () => void;
+  onSessionCreated?: (id: string) => void;
 }
 
 const SUBJECTS = [
