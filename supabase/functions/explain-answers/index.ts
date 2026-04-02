@@ -15,7 +15,7 @@ serve(async (req) => {
     if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY is not configured");
 
     const questionsText = incorrectQuestions.map((q: any, i: number) =>
-      `${i + 1}. Question: "${q.question}"\n   Student's answer: "${q.userAnswer}"\n   Correct answer: "${q.correctAnswer}"`
+      `${i + 1}. Question: "${q.question}"\n   Given answer: "${q.userAnswer}"\n   Correct answer: "${q.correctAnswer}"`
     ).join("\n\n");
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -29,11 +29,22 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "You are Pylo 🦉, a study helper. For each incorrect answer, write EXACTLY 2 lines:\nLine 1: The correct answer or concept.\nLine 2: A short explanation (1 sentence, optional).\n\nRules:\n- Do NOT say \"the student's answer is wrong\" or any judgmental phrasing\n- Do NOT repeat the question\n- Do NOT write intros, fluff, or motivational text\n- Use simple words, direct tone\n- Use markdown formatting\n- Max 2 sentences total per answer",
+            content: `You are Pylo 🦉, a study helper. For each incorrect answer, write EXACTLY 2 lines:
+Line 1: The correct answer or concept.
+Line 2: A short explanation (1 sentence max).
+
+STRICT RULES:
+- NEVER say "the student's answer", "your answer is wrong", "incorrect", or any judgmental phrasing
+- NEVER repeat the question
+- NEVER write intros, motivational text, or fluff
+- Just state what IS correct and briefly why
+- Use simple, direct language
+- Use markdown formatting
+- Number each answer to match the question number`,
           },
           {
             role: "user",
-            content: `Please explain these incorrect quiz answers to help me learn:\n\n${questionsText}`,
+            content: `Explain these incorrect quiz answers:\n\n${questionsText}`,
           },
         ],
       }),

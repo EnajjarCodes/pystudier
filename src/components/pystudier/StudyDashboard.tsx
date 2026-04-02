@@ -66,10 +66,11 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
     return (
       <div className="h-[100dvh] bg-background flex flex-col overflow-hidden">
         <SessionFlow
-          sessionId={activeSessionId}
+          sessionId={activeSessionId === "new" ? undefined : activeSessionId}
           userName={userName}
           userId={userId}
           onBack={() => { setActiveSessionId(null); loadSessions(); }}
+          onSessionCreated={(id) => setActiveSessionId(id)}
         />
       </div>
     );
