@@ -253,91 +253,107 @@ const SessionFlow = ({ sessionId, userName, userId, onBack }: SessionFlowProps) 
     </motion.div>
   );
 
-  // ── Subject Selection ──
-  if (step === "subject") {
+  // ── Focus Mode Overlay (Subject + Topic) ──
+  if (step === "subject" || step === "topic") {
     return (
-      <div className="flex flex-col h-full">
-        {renderHeader("Study Session", onBack)}
-        <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4">
-          <PyloMessage text="What are we studying?" />
-          <div className="grid grid-cols-2 gap-2 sm:gap-2.5 px-1">
-            {SUBJECTS.map((subject) => (
-              <motion.button key={subject} whileTap={{ scale: 0.97 }} onClick={() => handleSubjectSelect(subject)}
-                className="p-3 sm:p-4 rounded-xl border-2 border-border bg-card hover:border-primary/40 transition-all text-left">
-                <p className="font-display font-bold text-xs sm:text-sm text-foreground">{subject}</p>
-              </motion.button>
-            ))}
+      <div className="fixed inset-0 z-50 flex items-center justify-center">
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-foreground/60 backdrop-blur-sm" />
+
+        {/* Centered content */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.15 }}
+          className="relative z-10 flex flex-col items-center w-full max-w-sm mx-4"
+        >
+          {/* Pylo mascot */}
+          <img src={mascot} alt="Pylo" className="w-16 h-16 sm:w-20 sm:h-20 object-contain pylo-idle mb-3" />
+
+          {/* Message card */}
+          <div className="w-full rounded-2xl bg-card shadow-elevated border border-border p-4 sm:p-5">
+            <AnimatePresence mode="wait">
+              {step === "subject" ? (
+                <motion.div key="subject" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} transition={{ duration: 0.15 }}>
+                  <p className="text-sm sm:text-base font-display font-bold text-foreground text-center mb-4">What are we studying?</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {SUBJECTS.map((subject) => (
+                      <motion.button key={subject} whileTap={{ scale: 0.97 }} onClick={() => handleSubjectSelect(subject)}
+                        className="p-2.5 sm:p-3 rounded-xl border-2 border-border bg-background hover:border-primary/50 hover:bg-secondary/50 transition-all text-center">
+                        <p className="font-display font-bold text-xs sm:text-sm text-foreground">{subject}</p>
+                      </motion.button>
+                    ))}
+                  </div>
+                  <button onClick={onBack} className="w-full mt-3 text-xs text-muted-foreground hover:text-foreground transition-colors">Cancel</button>
+                </motion.div>
+              ) : (
+                <motion.div key="topic" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.15 }}>
+                  <p className="text-sm sm:text-base font-display font-bold text-foreground text-center mb-1">What topic in {selectedSubject}?</p>
+                  <p className="text-[10px] sm:text-xs text-muted-foreground text-center mb-3">Type, upload images, or share documents</p>
+
+                  {/* Attached files/images preview */}
+                  {(attachedFiles.length > 0 || attachedImages.length > 0) && (
+                    <div className="flex flex-wrap gap-1.5 mb-3">
+                      {attachedImages.map((img, i) => (
+                        <div key={`img-${i}`} className="relative group">
+                          <img src={img} alt="" className="w-12 h-12 object-cover rounded-lg border border-border" />
+                          <button onClick={() => setAttachedImages(prev => prev.filter((_, idx) => idx !== i))}
+                            className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-destructive text-destructive-foreground text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">×</button>
+                        </div>
+                      ))}
+                      {attachedFiles.map((file, i) => (
+                        <div key={`file-${i}`} className="flex items-center gap-1 px-2 py-1 rounded-lg bg-background border border-border">
+                          <FileText className="w-3 h-3 text-coral" />
+                          <span className="text-[10px] font-semibold truncate max-w-[70px]">{file.name}</span>
+                          <button onClick={() => setAttachedFiles(prev => prev.filter((_, idx) => idx !== i))}
+                            className="text-destructive text-[10px] font-bold">×</button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Upload buttons + input */}
+                  <input ref={imageInputRef as any} type="file" accept="image/*" multiple hidden onChange={handleImageUpload} />
+                  <input ref={fileInputRef as any} type="file" accept=".pdf,.txt,.md,.csv,.docx,.pptx" multiple hidden onChange={handleFileUpload} />
+
+                  <div className="flex items-center gap-1 mb-2">
+                    <button type="button" onClick={() => imageInputRef.current?.click()} className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-secondary transition-all">
+                      <ImagePlus className="w-4 h-4" />
+                    </button>
+                    <button type="button" onClick={() => fileInputRef.current?.click()} className="p-2 rounded-lg text-muted-foreground hover:text-coral hover:bg-secondary transition-all">
+                      <Upload className="w-4 h-4" />
+                    </button>
+                  </div>
+
+                  <div className="flex items-end gap-1.5">
+                    <textarea
+                      ref={textareaRef}
+                      value={topicInput}
+                      onChange={(e) => { setTopicInput(e.target.value); autoResize(); }}
+                      onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleTopicSubmit(); } }}
+                      placeholder="e.g., Quadratic equations..."
+                      rows={1}
+                      className="flex-1 min-w-0 px-3 py-2 rounded-xl border border-border bg-background text-foreground font-body text-xs sm:text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-muted-foreground resize-none overflow-y-auto"
+                      style={{ maxHeight: 100 }}
+                      autoFocus
+                    />
+                    <motion.button
+                      type="button"
+                      whileTap={{ scale: 0.95 }}
+                      disabled={extracting || (!topicInput.trim() && attachedFiles.length === 0 && attachedImages.length === 0)}
+                      onClick={handleTopicSubmit}
+                      className="p-2.5 rounded-xl gradient-primary text-primary-foreground shadow-soft disabled:opacity-40 disabled:cursor-not-allowed transition-all flex-shrink-0"
+                    >
+                      {extracting ? <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" /> : <Send className="w-4 h-4" />}
+                    </motion.button>
+                  </div>
+
+                  <button onClick={() => setStep("subject")} className="w-full mt-3 text-xs text-muted-foreground hover:text-foreground transition-colors">← Back</button>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
-        </div>
-      </div>
-    );
-  }
-
-  // ── Topic Input ──
-  if (step === "topic") {
-    return (
-      <div className="flex flex-col h-full">
-        {renderHeader("Study Session", () => setStep("subject"))}
-        <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4">
-          <PyloMessage text={`What topic in ${selectedSubject}?`} />
-
-          {/* Attached files/images preview */}
-          {(attachedFiles.length > 0 || attachedImages.length > 0) && (
-            <div className="flex flex-wrap gap-2">
-              {attachedImages.map((img, i) => (
-                <div key={`img-${i}`} className="relative group">
-                  <img src={img} alt="" className="w-14 h-14 object-cover rounded-lg border border-border" />
-                  <button onClick={() => setAttachedImages(prev => prev.filter((_, idx) => idx !== i))}
-                    className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-destructive text-destructive-foreground text-[10px] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">×</button>
-                </div>
-              ))}
-              {attachedFiles.map((file, i) => (
-                <div key={`file-${i}`} className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-card shadow-card border border-border">
-                  <FileText className="w-3.5 h-3.5 text-coral" />
-                  <span className="text-[10px] sm:text-xs font-semibold truncate max-w-[80px]">{file.name}</span>
-                  <button onClick={() => setAttachedFiles(prev => prev.filter((_, idx) => idx !== i))}
-                    className="text-destructive text-xs font-bold">×</button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Input area */}
-        <div className="p-3 sm:p-4 border-t border-border bg-card/80 flex-shrink-0">
-          <div className="flex items-end gap-1.5 sm:gap-2">
-            <input ref={imageInputRef as any} type="file" accept="image/*" multiple hidden onChange={handleImageUpload} />
-            <input ref={fileInputRef as any} type="file" accept=".pdf,.txt,.md,.csv,.docx,.pptx" multiple hidden onChange={handleFileUpload} />
-            <div className="flex gap-0.5 flex-shrink-0">
-              <button type="button" onClick={() => imageInputRef.current?.click()} className="p-2 rounded-xl text-muted-foreground hover:text-primary hover:bg-secondary transition-all">
-                <ImagePlus className="w-4 h-4 sm:w-5 sm:h-5" />
-              </button>
-              <button type="button" onClick={() => fileInputRef.current?.click()} className="p-2 rounded-xl text-muted-foreground hover:text-coral hover:bg-secondary transition-all">
-                <Upload className="w-4 h-4 sm:w-5 sm:h-5" />
-              </button>
-            </div>
-            <textarea
-              ref={textareaRef}
-              value={topicInput}
-              onChange={(e) => { setTopicInput(e.target.value); autoResize(); }}
-              onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleTopicSubmit(); } }}
-              placeholder={`e.g., Quadratic equations, Photosynthesis...`}
-              rows={1}
-              className="flex-1 min-w-0 px-3 sm:px-4 py-2.5 rounded-xl border border-border bg-background text-foreground font-body text-xs sm:text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder:text-muted-foreground resize-none overflow-y-auto"
-              style={{ maxHeight: 120 }}
-            />
-            <motion.button
-              type="button"
-              whileTap={{ scale: 0.95 }}
-              disabled={extracting || (!topicInput.trim() && attachedFiles.length === 0 && attachedImages.length === 0)}
-              onClick={handleTopicSubmit}
-              className="p-2.5 sm:p-3 rounded-xl gradient-primary text-primary-foreground shadow-soft disabled:opacity-40 disabled:cursor-not-allowed transition-all flex-shrink-0"
-            >
-              {extracting ? <div className="w-4 h-4 sm:w-5 sm:h-5 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" /> : <Send className="w-4 h-4 sm:w-5 sm:h-5" />}
-            </motion.button>
-          </div>
-          <p className="text-[10px] text-muted-foreground mt-1.5 text-center">Type a topic, upload images, or share documents</p>
-        </div>
+        </motion.div>
       </div>
     );
   }
