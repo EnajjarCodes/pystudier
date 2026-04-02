@@ -114,7 +114,6 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
     let context = "";
 
     try {
-      // Extract content from files
       for (const file of attachedFiles) {
         try {
           const text = await extractFileContent(file);
@@ -123,7 +122,6 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
           console.error("File extraction error:", e);
         }
       }
-      // Extract content from images
       for (const img of attachedImages) {
         try {
           const text = await extractImageContent(img);
@@ -140,12 +138,19 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
     setExtractedContext(context);
     setExtracting(false);
 
-    // Update session title
-    await supabase.from("study_sessions" as any).update({
-      title: topic,
+    // Create session now (at quiz stage), named after subject
+    const sessionTitle = selectedSubject;
+    const { data, error } = await supabase.from("study_sessions" as any).insert({
+      user_id: userId,
+      title: sessionTitle,
       quiz_topic: topic,
-      updated_at: new Date().toISOString(),
-    }).eq("id", sessionId);
+    } as any).select().single();
+
+    if (data && !error) {
+      const newId = (data as any).id;
+      setCurrentSessionId(newId);
+      onSessionCreated?.(newId);
+    }
 
     setStep("quiz");
   };
