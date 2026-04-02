@@ -11,7 +11,9 @@ import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import mascot from "@/assets/mascot.png";
+import mascotWave from "@/assets/mascot-wave.png";
 import mascotThinking from "@/assets/mascot-thinking.png";
+import { ChevronDown } from "lucide-react";
 
 type SessionStep = "subject" | "topic" | "quiz" | "summary" | "continue" | "chat";
 
