@@ -41,16 +41,9 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
 
   useEffect(() => { loadSessions(); }, [loadSessions]);
 
-  const startNewSession = async () => {
-    const { data, error } = await supabase
-      .from("study_sessions" as any)
-      .insert({ user_id: userId } as any)
-      .select()
-      .single();
-    if (data && !error) {
-      setActiveSessionId((data as any).id);
-      loadSessions();
-    }
+  const startNewSession = () => {
+    // Don't create DB record yet — SessionFlow creates it at quiz stage
+    setActiveSessionId("new");
   };
 
   const deleteSession = async (id: string) => {
