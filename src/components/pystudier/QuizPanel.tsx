@@ -262,7 +262,7 @@ const QuizPanel = ({ userName, userId, chatContext, onQuizComplete, initialTopic
   // ── Setup Phase ─────────────────────────────
   if (phase === "setup") {
     return (
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full min-h-0">
         <div className="p-3 sm:p-4 border-b border-border bg-card/80 backdrop-blur-sm flex-shrink-0">
           <h2 className="font-display font-bold text-foreground flex items-center gap-2 text-sm sm:text-base">
             <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
@@ -370,7 +370,7 @@ const QuizPanel = ({ userName, userId, chatContext, onQuizComplete, initialTopic
   // ── Loading Phase ───────────────────────────
   if (phase === "loading") {
     return (
-      <div className="flex flex-col items-center justify-center h-full gap-3 sm:gap-4 px-4">
+      <div className="flex flex-col items-center justify-center h-full min-h-0 gap-3 sm:gap-4 px-4">
         <img src={mascotThinking} alt="Pylo thinking" className="w-16 h-16 sm:w-20 sm:h-20 object-contain pylo-thinking" />
         <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin text-primary" />
         <p className="font-display font-bold text-foreground text-sm sm:text-base">Pylo is creating your quiz...</p>
@@ -393,7 +393,7 @@ const QuizPanel = ({ userName, userId, chatContext, onQuizComplete, initialTopic
       : aiResults[currentQ]?.correct ?? (normalizeAnswer(userAnswers[currentQ] || "") === normalizeAnswer(q.correctAnswer));
 
     return (
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full min-h-0">
         <div className="p-3 sm:p-4 border-b border-border bg-card/80 backdrop-blur-sm flex-shrink-0">
           <div className="flex items-center justify-between">
             {!sessionMode ? (
@@ -413,7 +413,7 @@ const QuizPanel = ({ userName, userId, chatContext, onQuizComplete, initialTopic
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 min-h-0">
           <motion.div key={currentQ} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
             <div className="prose prose-sm max-w-none mb-3 sm:mb-4">
               <h3 className="font-display font-bold text-sm sm:text-lg text-foreground">
@@ -542,7 +542,7 @@ const QuizPanel = ({ userName, userId, chatContext, onQuizComplete, initialTopic
   const pct = Math.round((score / total) * 100);
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-h-0">
       <div className="p-3 sm:p-4 border-b border-border bg-card/80 backdrop-blur-sm flex-shrink-0">
         <h2 className="font-display font-bold text-foreground text-center flex items-center justify-center gap-2 text-sm sm:text-base">
           <Award className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
@@ -550,7 +550,7 @@ const QuizPanel = ({ userName, userId, chatContext, onQuizComplete, initialTopic
         </h2>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4 sm:space-y-6">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4 sm:space-y-6 min-h-0">
         {/* Pylo message */}
         <div className="flex gap-2 items-start">
           <img src={mascot} alt="Pylo" className="w-7 h-7 object-contain flex-shrink-0 pylo-idle" />

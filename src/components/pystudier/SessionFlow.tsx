@@ -267,7 +267,7 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
   // ── Focus Mode Overlay (Subject + Topic) ──
   if (step === "subject" || step === "topic") {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/85 backdrop-blur-sm" />
 
@@ -276,7 +276,7 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.15 }}
-          className="relative z-10 flex flex-col items-center w-full max-w-sm mx-4"
+          className="relative z-10 flex flex-col items-center w-full max-w-sm mx-4 my-auto py-6"
         >
           {/* Pylo mascot - graduation cap with open wings */}
           <motion.img
@@ -288,7 +288,7 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
           />
 
           {/* Message card - same style as onboarding intro */}
-          <div className="relative w-full rounded-2xl bg-card shadow-elevated p-4 sm:p-5">
+          <div className="relative w-full rounded-2xl bg-card shadow-elevated p-4 sm:p-5 max-h-[70vh] overflow-y-auto">
             <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-card rotate-45 rounded-sm shadow-card" />
 
             <div className="relative z-10">
@@ -415,9 +415,9 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
   // ── Quiz ──
   if (step === "quiz") {
     return (
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full min-h-0">
         {renderHeader("Study Session", onBack)}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden min-h-0">
           <QuizPanel
             userName={userName}
             userId={userId}
@@ -445,8 +445,7 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
   if (step === "summary") {
     const hasSummary = summary.trim().length > 0;
     return (
-      <div className="flex flex-col h-full">
-        {renderHeader("Study Summary", () => setStep("quiz"))}
+      <div className="flex flex-col h-full min-h-0">
         <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3">
           <PyloMessage text="Here are the key ideas." />
 
@@ -485,9 +484,8 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
   // ── Chat inside session ──
   if (step === "chat") {
     return (
-      <div className="flex flex-col h-full">
-        {renderHeader("Ask Pylo", () => setStep("continue"), false)}
-        <div className="flex-1 overflow-hidden">
+      <div className="flex flex-col h-full min-h-0">
+        <div className="flex-1 overflow-hidden min-h-0">
           <ChatPanel
             userName={userName}
             messages={chatMessages.length === 0
@@ -506,7 +504,7 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
 
   // ── Continue ──
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-h-0">
       {renderHeader("Continue Learning", () => setStep("summary"))}
       <div className="flex-1 overflow-y-auto p-4 sm:p-6">
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center text-center gap-3 mb-6">

@@ -67,8 +67,14 @@
     @apply border-border;
   }
 
+  html, body, #root {
+    height: 100%;
+    min-height: 0;
+  }
+
   body {
     @apply bg-background text-foreground font-body antialiased;
+    -webkit-overflow-scrolling: touch;
   }
 
   h1, h2, h3, h4, h5, h6 {

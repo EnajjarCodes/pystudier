@@ -64,7 +64,7 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
   // If a session is active, show SessionFlow
   if (activeSessionId) {
     return (
-      <div className="h-[100dvh] bg-background flex flex-col overflow-hidden">
+      <div className="h-[100dvh] min-h-0 bg-background flex flex-col overflow-hidden">
         <SessionFlow
           sessionId={activeSessionId === "new" ? undefined : activeSessionId}
           userName={userName}
@@ -87,7 +87,7 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
   };
 
   return (
-    <div className="h-[100dvh] bg-background flex flex-col overflow-hidden">
+    <div className="h-[100dvh] min-h-0 bg-background flex flex-col overflow-hidden">
       {/* Top Nav */}
       <header className="h-12 sm:h-14 border-b border-border bg-card/80 backdrop-blur-sm flex items-center px-3 sm:px-4 gap-2 sm:gap-3 flex-shrink-0">
         <button onClick={() => setMenuOpen(!menuOpen)} className="p-1.5 sm:p-2 rounded-xl hover:bg-secondary transition-colors">
@@ -133,7 +133,7 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col overflow-hidden pb-12 lg:pb-0">
+        <div className="flex-1 flex flex-col overflow-hidden pb-14 lg:pb-0 min-h-0">
           {activeTab === "study" && (
             <div className="flex flex-col h-full">
               <div className="p-3 sm:p-4 border-b border-border bg-card/80 backdrop-blur-sm flex-shrink-0 flex items-center justify-between">
@@ -202,7 +202,7 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
         </div>
 
         {/* Mobile bottom tabs */}
-        <div className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-sm border-t border-border flex lg:hidden z-30">
+        <div className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-sm border-t border-border flex lg:hidden z-30" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
           {tabs.map((tab) => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)}
               className={`flex-1 flex flex-col items-center py-2.5 gap-0.5 transition-colors ${activeTab === tab.id ? "text-primary" : "text-muted-foreground"}`}>

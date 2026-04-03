@@ -116,7 +116,7 @@ const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading
   ];
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-h-0">
       <div className="flex items-center gap-3 p-3 sm:p-4 border-b border-border bg-card/80 backdrop-blur-sm flex-shrink-0">
         <h2 className="font-display font-bold text-foreground text-sm sm:text-base">Chat</h2>
         <div className="ml-auto flex items-center gap-1.5">
@@ -125,7 +125,7 @@ const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 min-h-0">
         {topMessage && (
           <div className="text-center">
             <span className="text-[10px] sm:text-xs text-muted-foreground font-semibold">{topMessage}</span>
@@ -245,7 +245,7 @@ const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading
         )}
       </AnimatePresence>
 
-      <form onSubmit={handleSubmit} className="p-3 sm:p-4 border-t border-border bg-card/80 backdrop-blur-sm flex-shrink-0">
+      <form onSubmit={handleSubmit} className="p-3 sm:p-4 border-t border-border bg-card/80 backdrop-blur-sm flex-shrink-0" style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom, 0px))' }}>
         <div className="flex items-end gap-1.5 sm:gap-2">
           <div className="flex gap-0.5 sm:gap-1 flex-shrink-0">
             <input ref={imageInputRef} type="file" accept="image/*" multiple hidden onChange={handleImageUpload} />
