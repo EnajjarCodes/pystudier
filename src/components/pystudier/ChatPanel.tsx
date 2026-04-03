@@ -116,7 +116,7 @@ const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading
   ];
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full min-h-0">
       <div className="flex items-center gap-3 p-3 sm:p-4 border-b border-border bg-card/80 backdrop-blur-sm flex-shrink-0">
         <h2 className="font-display font-bold text-foreground text-sm sm:text-base">Chat</h2>
         <div className="ml-auto flex items-center gap-1.5">
