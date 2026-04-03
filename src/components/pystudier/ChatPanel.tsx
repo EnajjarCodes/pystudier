@@ -245,7 +245,7 @@ const ChatPanel = ({ userName, messages, onSendMessage, onEditMessage, isLoading
         )}
       </AnimatePresence>
 
-      <form onSubmit={handleSubmit} className="p-3 sm:p-4 border-t border-border bg-card/80 backdrop-blur-sm flex-shrink-0">
+      <form onSubmit={handleSubmit} className="p-3 sm:p-4 border-t border-border bg-card/80 backdrop-blur-sm flex-shrink-0" style={{ paddingBottom: 'max(0.75rem, env(safe-area-inset-bottom, 0px))' }}>
         <div className="flex items-end gap-1.5 sm:gap-2">
           <div className="flex gap-0.5 sm:gap-1 flex-shrink-0">
             <input ref={imageInputRef} type="file" accept="image/*" multiple hidden onChange={handleImageUpload} />
