@@ -550,7 +550,7 @@ const QuizPanel = ({ userName, userId, chatContext, onQuizComplete, initialTopic
         </h2>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4 sm:space-y-6">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-4 sm:space-y-6 min-h-0">
         {/* Pylo message */}
         <div className="flex gap-2 items-start">
           <img src={mascot} alt="Pylo" className="w-7 h-7 object-contain flex-shrink-0 pylo-idle" />
