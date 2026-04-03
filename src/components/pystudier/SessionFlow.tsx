@@ -441,6 +441,7 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
             userId={userId}
             chatContext={quizContext}
             onQuizComplete={handleQuizComplete}
+            onIncorrectQuestions={handleIncorrectQuestions}
             initialTopic={quizTopic}
             initialSubject={selectedSubject}
             sessionMode
