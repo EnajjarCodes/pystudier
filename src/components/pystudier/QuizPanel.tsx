@@ -221,7 +221,10 @@ const QuizPanel = ({ userName, userId, chatContext, onQuizComplete, onIncorrectQ
         }
         return null;
       })
-      .filter(Boolean);
+      .filter(Boolean) as { question: string; userAnswer: string; correctAnswer: string }[];
+
+    // Report incorrect questions to parent
+    onIncorrectQuestions?.(incorrectQuestions);
 
     if (incorrectQuestions.length > 0) {
       setLoadingExplanation(true);
