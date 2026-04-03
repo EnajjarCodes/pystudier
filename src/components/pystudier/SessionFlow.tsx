@@ -521,6 +521,98 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
     );
   }
 
+  // ── Review Quiz ──
+  if (step === "review") {
+    const reviewContext = incorrectQuestions.map((q, i) =>
+      `${i + 1}. Question: "${q.question}" — Correct answer: "${q.correctAnswer}" — Student answered: "${q.userAnswer}"`
+    ).join("\n");
+
+    return (
+      <div className="flex flex-col h-full min-h-0">
+        {renderHeader("Review", () => setStep("continue"))}
+        <div className="flex-1 overflow-hidden min-h-0">
+          <QuizPanel
+            key={`review-${reviewAttempt}`}
+            userName={userName}
+            userId={userId}
+            chatContext={`REVIEW MODE: Generate questions that test understanding of these weak areas. Focus on the concepts the student got wrong:\n${reviewContext}`}
+            onQuizComplete={(score, total) => handleReviewComplete(score, total)}
+            initialTopic={quizTopic}
+            initialSubject={selectedSubject}
+            sessionMode
+            reviewMode
+            reviewQuestionCount={Math.min(5, Math.max(3, incorrectQuestions.length))}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  // ── Review Results ──
+  if (step === "review-results") {
+    const passed = reviewScore && reviewScore.score >= Math.ceil(reviewScore.total * 0.7);
+    return (
+      <div className="flex flex-col h-full min-h-0">
+        {renderHeader("Review Results", () => setStep("continue"))}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6">
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center text-center gap-3 mb-6">
+            <img src={passed ? mascotWave : mascot} alt="Pylo" className="w-16 h-16 sm:w-20 sm:h-20 pylo-appear pylo-idle" />
+            {reviewScore && (
+              <div className="text-center">
+                <p className="text-3xl sm:text-4xl font-display font-black text-primary">{Math.round((reviewScore.score / reviewScore.total) * 100)}%</p>
+                <p className="text-xs sm:text-sm text-muted-foreground mt-1">{reviewScore.score}/{reviewScore.total} correct</p>
+              </div>
+            )}
+            <div className="mt-2 p-3 rounded-2xl bg-card shadow-card border border-border max-w-xs">
+              <p className="text-sm font-body text-foreground">
+                {passed
+                  ? "Nice work — you're done with this topic. 🎉"
+                  : "Let's try that again to lock it in."}
+              </p>
+            </div>
+          </motion.div>
+
+          <div className="space-y-3 max-w-sm mx-auto">
+            {!passed && (
+              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={startReview}
+                className="w-full p-4 rounded-2xl bg-card shadow-card border border-border hover:border-primary/40 transition-all flex items-center gap-3 text-left">
+                <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center flex-shrink-0">
+                  <RotateCcw className="w-5 h-5 text-primary-foreground" />
+                </div>
+                <div>
+                  <p className="font-display font-bold text-sm text-foreground">Review Again</p>
+                  <p className="text-xs text-muted-foreground">Practice weak areas one more time</p>
+                </div>
+              </motion.button>
+            )}
+
+            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => setStep("chat")}
+              className="w-full p-4 rounded-2xl bg-card shadow-card border border-border hover:border-primary/40 transition-all flex items-center gap-3 text-left">
+              <div className="w-10 h-10 rounded-xl bg-coral/20 flex items-center justify-center flex-shrink-0">
+                <MessageCircle className="w-5 h-5 text-coral" />
+              </div>
+              <div>
+                <p className="font-display font-bold text-sm text-foreground">Ask Pylo</p>
+                <p className="text-xs text-muted-foreground">Get deeper explanations</p>
+              </div>
+            </motion.button>
+
+            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={onBack}
+              className="w-full p-4 rounded-2xl bg-card shadow-card border border-border hover:border-primary/40 transition-all flex items-center gap-3 text-left">
+              <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center flex-shrink-0">
+                <BookOpen className="w-5 h-5 text-muted-foreground" />
+              </div>
+              <div>
+                <p className="font-display font-bold text-sm text-foreground">Done</p>
+                <p className="text-xs text-muted-foreground">Back to sessions list</p>
+              </div>
+            </motion.button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // ── Continue ──
   return (
     <div className="flex flex-col h-full min-h-0">
@@ -532,17 +624,27 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
         </motion.div>
 
         <div className="space-y-3 max-w-sm mx-auto">
-          <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}
-            onClick={() => { setStep("subject"); setQuizResult(null); setSummary(""); setQuizTopic(""); setQuizContext(""); setSelectedSubject(""); setTopicInput(""); setAttachedFiles([]); setAttachedImages([]); }}
-            className="w-full p-4 rounded-2xl bg-card shadow-card border border-border hover:border-primary/40 transition-all flex items-center gap-3 text-left">
-            <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center flex-shrink-0">
-              <RotateCcw className="w-5 h-5 text-primary-foreground" />
+          {/* Review button - primary action when there are incorrect questions */}
+          {incorrectQuestions.length > 0 && (
+            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={startReview}
+              className="w-full p-4 rounded-2xl bg-card shadow-card border-2 border-primary/30 hover:border-primary transition-all flex items-center gap-3 text-left">
+              <div className="w-10 h-10 rounded-xl gradient-primary flex items-center justify-center flex-shrink-0">
+                <Target className="w-5 h-5 text-primary-foreground" />
+              </div>
+              <div>
+                <p className="font-display font-bold text-sm text-foreground">Review</p>
+                <p className="text-xs text-muted-foreground">Focus on what you got wrong</p>
+              </div>
+            </motion.button>
+          )}
+
+          {/* If no incorrect questions, show completion */}
+          {incorrectQuestions.length === 0 && (
+            <div className="p-4 rounded-2xl bg-primary/10 border border-primary/30 text-center">
+              <p className="text-sm font-display font-bold text-primary">Perfect score! 🎉</p>
+              <p className="text-xs text-muted-foreground mt-1">You've mastered this topic.</p>
             </div>
-            <div>
-              <p className="font-display font-bold text-sm text-foreground">New Quiz</p>
-              <p className="text-xs text-muted-foreground">Test yourself on another topic</p>
-            </div>
-          </motion.button>
+          )}
 
           <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => setStep("chat")}
             className="w-full p-4 rounded-2xl bg-card shadow-card border border-border hover:border-primary/40 transition-all flex items-center gap-3 text-left">
