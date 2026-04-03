@@ -262,7 +262,7 @@ const QuizPanel = ({ userName, userId, chatContext, onQuizComplete, initialTopic
   // ── Setup Phase ─────────────────────────────
   if (phase === "setup") {
     return (
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full min-h-0">
         <div className="p-3 sm:p-4 border-b border-border bg-card/80 backdrop-blur-sm flex-shrink-0">
           <h2 className="font-display font-bold text-foreground flex items-center gap-2 text-sm sm:text-base">
             <Brain className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
