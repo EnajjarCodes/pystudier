@@ -37,11 +37,15 @@ interface QuizPanelProps {
   userId: string;
   chatContext?: string;
   onQuizComplete?: (score: number, total: number, topic: string) => void;
+  onIncorrectQuestions?: (incorrect: { question: string; userAnswer: string; correctAnswer: string }[]) => void;
   /** When provided, skip setup and auto-generate */
   initialTopic?: string;
   initialSubject?: string;
   /** Hide setup phase and "New Quiz" in results */
   sessionMode?: boolean;
+  /** Review mode: slightly harder, fewer questions */
+  reviewMode?: boolean;
+  reviewQuestionCount?: number;
 }
 
 const MAX_QUESTIONS = 50;
@@ -57,14 +61,14 @@ const DIFFICULTIES = [
   { id: "hard" as const, label: "Hard", icon: Flame, desc: "Complex reasoning" },
 ];
 
-const QuizPanel = ({ userName, userId, chatContext, onQuizComplete, initialTopic, initialSubject, sessionMode }: QuizPanelProps) => {
+const QuizPanel = ({ userName, userId, chatContext, onQuizComplete, onIncorrectQuestions, initialTopic, initialSubject, sessionMode, reviewMode, reviewQuestionCount }: QuizPanelProps) => {
   const [phase, setPhase] = useState<QuizPhase>(initialTopic ? "loading" : "setup");
   const [setup, setSetup] = useState<QuizSetup>({
     topic: initialTopic || "",
     questionTypes: ["multiple_choice", "true_false", "written"],
-    questionCount: 10,
+    questionCount: reviewMode ? (reviewQuestionCount || 5) : 10,
     checkAnswers: true,
-    difficulty: "normal",
+    difficulty: reviewMode ? "hard" : "normal",
   });
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentQ, setCurrentQ] = useState(0);
@@ -217,7 +221,10 @@ const QuizPanel = ({ userName, userId, chatContext, onQuizComplete, initialTopic
         }
         return null;
       })
-      .filter(Boolean);
+      .filter(Boolean) as { question: string; userAnswer: string; correctAnswer: string }[];
+
+    // Report incorrect questions to parent
+    onIncorrectQuestions?.(incorrectQuestions);
 
     if (incorrectQuestions.length > 0) {
       setLoadingExplanation(true);
