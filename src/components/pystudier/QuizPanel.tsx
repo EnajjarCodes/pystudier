@@ -413,7 +413,7 @@ const QuizPanel = ({ userName, userId, chatContext, onQuizComplete, initialTopic
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3 sm:space-y-4 min-h-0">
           <motion.div key={currentQ} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
             <div className="prose prose-sm max-w-none mb-3 sm:mb-4">
               <h3 className="font-display font-bold text-sm sm:text-lg text-foreground">
