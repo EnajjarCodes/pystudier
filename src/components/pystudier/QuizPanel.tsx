@@ -37,11 +37,15 @@ interface QuizPanelProps {
   userId: string;
   chatContext?: string;
   onQuizComplete?: (score: number, total: number, topic: string) => void;
+  onIncorrectQuestions?: (incorrect: { question: string; userAnswer: string; correctAnswer: string }[]) => void;
   /** When provided, skip setup and auto-generate */
   initialTopic?: string;
   initialSubject?: string;
   /** Hide setup phase and "New Quiz" in results */
   sessionMode?: boolean;
+  /** Review mode: slightly harder, fewer questions */
+  reviewMode?: boolean;
+  reviewQuestionCount?: number;
 }
 
 const MAX_QUESTIONS = 50;
