@@ -133,7 +133,7 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 flex flex-col overflow-hidden pb-12 lg:pb-0">
+        <div className="flex-1 flex flex-col overflow-hidden pb-14 lg:pb-0 min-h-0">
           {activeTab === "study" && (
             <div className="flex flex-col h-full">
               <div className="p-3 sm:p-4 border-b border-border bg-card/80 backdrop-blur-sm flex-shrink-0 flex items-center justify-between">
