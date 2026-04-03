@@ -370,7 +370,7 @@ const QuizPanel = ({ userName, userId, chatContext, onQuizComplete, initialTopic
   // ── Loading Phase ───────────────────────────
   if (phase === "loading") {
     return (
-      <div className="flex flex-col items-center justify-center h-full gap-3 sm:gap-4 px-4">
+      <div className="flex flex-col items-center justify-center h-full min-h-0 gap-3 sm:gap-4 px-4">
         <img src={mascotThinking} alt="Pylo thinking" className="w-16 h-16 sm:w-20 sm:h-20 object-contain pylo-thinking" />
         <Loader2 className="w-5 h-5 sm:w-6 sm:h-6 animate-spin text-primary" />
         <p className="font-display font-bold text-foreground text-sm sm:text-base">Pylo is creating your quiz...</p>
