@@ -64,7 +64,7 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
   // If a session is active, show SessionFlow
   if (activeSessionId) {
     return (
-      <div className="h-[100dvh] bg-background flex flex-col overflow-hidden">
+      <div className="h-[100dvh] min-h-0 bg-background flex flex-col overflow-hidden">
         <SessionFlow
           sessionId={activeSessionId === "new" ? undefined : activeSessionId}
           userName={userName}
