@@ -417,7 +417,7 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
     return (
       <div className="flex flex-col h-full min-h-0">
         {renderHeader("Study Session", onBack)}
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden min-h-0">
           <QuizPanel
             userName={userName}
             userId={userId}
