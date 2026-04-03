@@ -288,7 +288,7 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
           />
 
           {/* Message card - same style as onboarding intro */}
-          <div className="relative w-full rounded-2xl bg-card shadow-elevated p-4 sm:p-5">
+          <div className="relative w-full rounded-2xl bg-card shadow-elevated p-4 sm:p-5 max-h-[70vh] overflow-y-auto">
             <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-6 h-6 bg-card rotate-45 rounded-sm shadow-card" />
 
             <div className="relative z-10">
