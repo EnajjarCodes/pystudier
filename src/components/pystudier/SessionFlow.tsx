@@ -445,8 +445,7 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
   if (step === "summary") {
     const hasSummary = summary.trim().length > 0;
     return (
-      <div className="flex flex-col h-full">
-        {renderHeader("Study Summary", () => setStep("quiz"))}
+      <div className="flex flex-col h-full min-h-0">
         <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3">
           <PyloMessage text="Here are the key ideas." />
 
