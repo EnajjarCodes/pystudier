@@ -393,7 +393,7 @@ const QuizPanel = ({ userName, userId, chatContext, onQuizComplete, initialTopic
       : aiResults[currentQ]?.correct ?? (normalizeAnswer(userAnswers[currentQ] || "") === normalizeAnswer(q.correctAnswer));
 
     return (
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full min-h-0">
         <div className="p-3 sm:p-4 border-b border-border bg-card/80 backdrop-blur-sm flex-shrink-0">
           <div className="flex items-center justify-between">
             {!sessionMode ? (
