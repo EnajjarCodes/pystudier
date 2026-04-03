@@ -171,6 +171,21 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
     }
   };
 
+  const handleIncorrectQuestions = (incorrect: { question: string; userAnswer: string; correctAnswer: string }[]) => {
+    setIncorrectQuestions(incorrect);
+  };
+
+  const handleReviewComplete = async (score: number, total: number) => {
+    setReviewScore({ score, total });
+    setStep("review-results");
+  };
+
+  const startReview = () => {
+    setReviewScore(null);
+    setReviewAttempt(prev => prev + 1);
+    setStep("review");
+  };
+
   const goToSummary = async () => {
     setStep("summary");
     if (!quizResult) return;
