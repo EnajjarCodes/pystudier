@@ -87,7 +87,7 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
   };
 
   return (
-    <div className="h-[100dvh] bg-background flex flex-col overflow-hidden">
+    <div className="h-[100dvh] min-h-0 bg-background flex flex-col overflow-hidden">
       {/* Top Nav */}
       <header className="h-12 sm:h-14 border-b border-border bg-card/80 backdrop-blur-sm flex items-center px-3 sm:px-4 gap-2 sm:gap-3 flex-shrink-0">
         <button onClick={() => setMenuOpen(!menuOpen)} className="p-1.5 sm:p-2 rounded-xl hover:bg-secondary transition-colors">
