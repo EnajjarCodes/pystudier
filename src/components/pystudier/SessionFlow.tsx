@@ -415,7 +415,7 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
   // ── Quiz ──
   if (step === "quiz") {
     return (
-      <div className="flex flex-col h-full">
+      <div className="flex flex-col h-full min-h-0">
         {renderHeader("Study Session", onBack)}
         <div className="flex-1 overflow-hidden">
           <QuizPanel
