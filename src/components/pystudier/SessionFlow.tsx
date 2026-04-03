@@ -15,7 +15,7 @@ import mascotWave from "@/assets/mascot-wave.png";
 import mascotThinking from "@/assets/mascot-thinking.png";
 import { ChevronDown } from "lucide-react";
 
-type SessionStep = "subject" | "topic" | "quiz" | "summary" | "continue" | "chat";
+type SessionStep = "subject" | "topic" | "quiz" | "summary" | "continue" | "chat" | "review" | "review-results";
 
 interface SessionFlowProps {
   sessionId?: string;
