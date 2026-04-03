@@ -484,8 +484,7 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
   // ── Chat inside session ──
   if (step === "chat") {
     return (
-      <div className="flex flex-col h-full">
-        {renderHeader("Ask Pylo", () => setStep("continue"), false)}
+      <div className="flex flex-col h-full min-h-0">
         <div className="flex-1 overflow-hidden">
           <ChatPanel
             userName={userName}
