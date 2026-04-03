@@ -202,7 +202,7 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
         </div>
 
         {/* Mobile bottom tabs */}
-        <div className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-sm border-t border-border flex lg:hidden z-30">
+        <div className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-sm border-t border-border flex lg:hidden z-30" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
           {tabs.map((tab) => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)}
               className={`flex-1 flex flex-col items-center py-2.5 gap-0.5 transition-colors ${activeTab === tab.id ? "text-primary" : "text-muted-foreground"}`}>
