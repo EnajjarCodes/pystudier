@@ -267,7 +267,7 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
   // ── Focus Mode Overlay (Subject + Topic) ──
   if (step === "subject" || step === "topic") {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center">
+      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
         {/* Dark overlay */}
         <div className="absolute inset-0 bg-black/85 backdrop-blur-sm" />
 
@@ -276,7 +276,7 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.15 }}
-          className="relative z-10 flex flex-col items-center w-full max-w-sm mx-4"
+          className="relative z-10 flex flex-col items-center w-full max-w-sm mx-4 my-auto py-6"
         >
           {/* Pylo mascot - graduation cap with open wings */}
           <motion.img
