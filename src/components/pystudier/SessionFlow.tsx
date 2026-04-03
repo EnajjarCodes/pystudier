@@ -48,6 +48,9 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
   const [quizResult, setQuizResult] = useState<{ score: number; total: number; topic: string } | null>(null);
   const [summary, setSummary] = useState("");
   const [summaryLoading, setSummaryLoading] = useState(false);
+  const [incorrectQuestions, setIncorrectQuestions] = useState<{ question: string; userAnswer: string; correctAnswer: string }[]>([]);
+  const [reviewScore, setReviewScore] = useState<{ score: number; total: number } | null>(null);
+  const [reviewAttempt, setReviewAttempt] = useState(0);
 
   // Chat state
   const [chatMessages, setChatMessages] = useState<Message[]>([]);
