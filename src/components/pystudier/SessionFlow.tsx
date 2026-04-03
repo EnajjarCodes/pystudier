@@ -485,7 +485,7 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
   if (step === "chat") {
     return (
       <div className="flex flex-col h-full min-h-0">
-        <div className="flex-1 overflow-hidden">
+        <div className="flex-1 overflow-hidden min-h-0">
           <ChatPanel
             userName={userName}
             messages={chatMessages.length === 0
