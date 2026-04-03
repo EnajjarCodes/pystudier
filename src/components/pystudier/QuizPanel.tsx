@@ -61,14 +61,14 @@ const DIFFICULTIES = [
   { id: "hard" as const, label: "Hard", icon: Flame, desc: "Complex reasoning" },
 ];
 
-const QuizPanel = ({ userName, userId, chatContext, onQuizComplete, initialTopic, initialSubject, sessionMode }: QuizPanelProps) => {
+const QuizPanel = ({ userName, userId, chatContext, onQuizComplete, onIncorrectQuestions, initialTopic, initialSubject, sessionMode, reviewMode, reviewQuestionCount }: QuizPanelProps) => {
   const [phase, setPhase] = useState<QuizPhase>(initialTopic ? "loading" : "setup");
   const [setup, setSetup] = useState<QuizSetup>({
     topic: initialTopic || "",
     questionTypes: ["multiple_choice", "true_false", "written"],
-    questionCount: 10,
+    questionCount: reviewMode ? (reviewQuestionCount || 5) : 10,
     checkAnswers: true,
-    difficulty: "normal",
+    difficulty: reviewMode ? "hard" : "normal",
   });
   const [questions, setQuestions] = useState<QuizQuestion[]>([]);
   const [currentQ, setCurrentQ] = useState(0);

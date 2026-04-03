@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ChevronRight, MessageCircle, RotateCcw, BookOpen, ImagePlus, FileText, Send, Upload } from "lucide-react";
+import { ArrowLeft, ChevronRight, MessageCircle, RotateCcw, BookOpen, ImagePlus, FileText, Send, Upload, Target } from "lucide-react";
 import QuizPanel from "./QuizPanel";
 import ChatPanel, { Message } from "./ChatPanel";
 import { streamChat } from "@/lib/ai-stream";
