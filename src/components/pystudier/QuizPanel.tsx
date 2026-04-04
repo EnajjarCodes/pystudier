@@ -231,9 +231,9 @@ const QuizPanel = ({ userName, userId, chatContext, onQuizComplete, onIncorrectQ
       try {
         const { data, error: fnError } = await supabase.functions.invoke("explain-answers", { body: { incorrectQuestions } });
         if (fnError) throw fnError;
-        setExplanation(data?.explanation || "");
+        setExplanation(data?.explanation || "Something went wrong — focus on the mistakes above.");
       } catch {
-        setExplanation("Could not load explanations at this time.");
+        setExplanation("Something went wrong — focus on the mistakes above.");
       }
       setLoadingExplanation(false);
     }
