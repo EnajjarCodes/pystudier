@@ -65,6 +65,40 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated, cl
 
   const generateId = () => Math.random().toString(36).substr(2, 9);
 
+  // Handle classroom item — skip subject/topic, go straight to quiz
+  useEffect(() => {
+    if (!classroomItem || sessionId) return;
+    const startClassroomSession = async () => {
+      const subject = classroomItem.courseName;
+      const topic = classroomItem.title;
+      const context = [
+        classroomItem.description,
+        classroomItem.attachmentContent,
+      ].filter(Boolean).join("\n\n");
+
+      setSelectedSubject(subject);
+      setQuizTopic(topic);
+      setQuizContext(context);
+      setExtractedContext(context);
+
+      // Create session
+      const { data, error } = await supabase.from("study_sessions" as any).insert({
+        user_id: userId,
+        title: subject,
+        quiz_topic: topic,
+      } as any).select().single();
+
+      if (data && !error) {
+        const newId = (data as any).id;
+        setCurrentSessionId(newId);
+        onSessionCreated?.(newId);
+      }
+
+      setStep("quiz");
+    };
+    startClassroomSession();
+  }, [classroomItem]);
+
   const currentStepIndex = ["subject", "topic", "quiz", "summary", "continue"].indexOf(step);
   const stepLabels = ["Subject", "Topic", "Quiz", "Summary", "Next"];
 
