@@ -208,7 +208,7 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
     if (!quizResult) return;
     setSummaryLoading(true);
     try {
-      const prompt = `The student just completed a quiz on "${quizResult.topic}" and scored ${quizResult.score}/${quizResult.total}. Generate a concise study summary of the key concepts. Use bullet points, max 6 points, keep each point to 1-2 sentences.`;
+      const prompt = `The student just completed a quiz on "${quizResult.topic}" and scored ${quizResult.score}/${quizResult.total}. Generate a concise study summary of the key concepts they should review. Use bullet points, max 6 points, keep each point to 1-2 sentences. Focus on concepts related to their mistakes if any.`;
       let result = "";
       await streamChat({
         messages: [{ role: "user", content: prompt }],
@@ -216,12 +216,17 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
         onDone: () => { setSummaryLoading(false); },
         onError: () => {
           setSummaryLoading(false);
-          setSummary("");
+          if (!result.trim()) {
+            setSummary("Something went wrong — focus on the mistakes above to improve.");
+          }
         },
       });
+      if (!result.trim()) {
+        setSummary("Something went wrong — focus on the mistakes above to improve.");
+      }
     } catch {
       setSummaryLoading(false);
-      setSummary("");
+      setSummary("Something went wrong — focus on the mistakes above to improve.");
     }
   };
 
