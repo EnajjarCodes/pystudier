@@ -7,6 +7,7 @@ import Index from "./pages/Index";
 import Settings from "./pages/Settings";
 import Terms from "./pages/Terms";
 import NotFound from "./pages/NotFound";
+import ClassroomCallback from "./pages/ClassroomCallback";
 
 const queryClient = new QueryClient();
 
