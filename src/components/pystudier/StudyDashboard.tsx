@@ -30,6 +30,11 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
   const [sessions, setSessions] = useState<StudySession[]>([]);
   const [activeSessionId, setActiveSessionId] = useState<string | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [classroomItem, setClassroomItem] = useState<ClassroomItem | null>(null);
+  const classroom = useGoogleClassroom(userId);
+
+  // Fetch classroom items on mount
+  useEffect(() => { classroom.fetchItems(); }, []);
 
   const loadSessions = useCallback(async () => {
     const { data } = await supabase
