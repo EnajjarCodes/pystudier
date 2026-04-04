@@ -25,7 +25,7 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: `You are an answer checker for a study quiz. Compare the student's answer to the correct answer. 
+            content: `You are a factual answer checker. Compare the given answer to the correct answer.
 Determine if they are equivalent — ignoring differences in:
 - Spacing, capitalization, punctuation
 - Mathematical notation (e.g., "x^2" vs "x²" vs "x squared")
@@ -33,21 +33,28 @@ Determine if they are equivalent — ignoring differences in:
 - Units written differently (e.g., "5 m/s" vs "5 meters per second")
 - Equivalent mathematical expressions (e.g., "2/4" vs "0.5" vs "1/2")
 
-Respond with ONLY a JSON object: {"correct": true/false, "explanation": "brief reason if incorrect"}
-If the answer is correct, set explanation to empty string.`,
+Respond with ONLY a JSON object: {"correct": true/false, "explanation": "brief correction if incorrect"}
+
+RULES for explanation (only when incorrect):
+- State the correct answer directly. Example: "The correct answer is 64 cm³."
+- Optionally add ONE short sentence with the key concept. Example: "Volume = length × width × height."
+- Do NOT mention "the student", "your answer", or any reference to the person
+- Do NOT repeat the question
+- Do NOT be judgmental or motivational
+- Keep it factual and under 2 sentences
+- If correct, set explanation to empty string`,
           },
           {
             role: "user",
-            content: `Question: ${question}\nStudent's answer: "${userAnswer}"\nCorrect answer: "${correctAnswer}"`,
+            content: `Question: ${question}\nGiven answer: "${userAnswer}"\nCorrect answer: "${correctAnswer}"`,
           },
         ],
       }),
     });
 
     if (!response.ok) {
-      // Fallback to simple comparison
       const simple = userAnswer.toLowerCase().trim() === correctAnswer.toLowerCase().trim();
-      return new Response(JSON.stringify({ correct: simple, explanation: simple ? "" : "Your answer doesn't match the expected answer." }), {
+      return new Response(JSON.stringify({ correct: simple, explanation: simple ? "" : `The correct answer is: ${correctAnswer}` }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
@@ -55,7 +62,6 @@ If the answer is correct, set explanation to empty string.`,
     const data = await response.json();
     const content = data.choices?.[0]?.message?.content || "";
     
-    // Parse JSON from response
     try {
       const jsonMatch = content.match(/\{[\s\S]*\}/);
       if (jsonMatch) {
@@ -66,7 +72,6 @@ If the answer is correct, set explanation to empty string.`,
       }
     } catch {}
 
-    // Fallback
     const simple = userAnswer.toLowerCase().trim() === correctAnswer.toLowerCase().trim();
     return new Response(JSON.stringify({ correct: simple, explanation: "" }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
