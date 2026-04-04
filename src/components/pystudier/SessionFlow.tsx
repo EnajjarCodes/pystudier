@@ -110,8 +110,9 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
   }, []);
 
   const handleTopicSubmit = async () => {
-    const hasInput = topicInput.trim() || attachedFiles.length > 0 || attachedImages.length > 0;
-    if (!hasInput) return;
+    const hasText = topicInput.trim().length > 0;
+    const hasFiles = attachedFiles.length > 0 || attachedImages.length > 0;
+    if (!hasText && !hasFiles) return;
 
     setExtracting(true);
     let context = "";
@@ -123,6 +124,7 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
           context += `\n\n--- Content from ${file.name} ---\n${text}`;
         } catch (e: any) {
           console.error("File extraction error:", e);
+          toast.error(`Could not read ${file.name}`);
         }
       }
       for (const img of attachedImages) {
@@ -131,11 +133,26 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated }: 
           context += `\n\n--- Content from image ---\n${text}`;
         } catch (e: any) {
           console.error("Image extraction error:", e);
+          toast.error("Could not read image");
         }
       }
     } catch {}
 
-    const topic = topicInput.trim() || selectedSubject;
+    // Input interpretation:
+    // - Text only → text is the topic
+    // - File/image only → extracted content is context, subject is topic
+    // - Text + file/image → text is instruction/modifier, extracted content is context
+    let topic: string;
+    if (hasText && hasFiles) {
+      // Text acts as instruction (e.g. "grade 7 level"), content from files is context
+      topic = selectedSubject;
+      context = `User instruction: ${topicInput.trim()}\n${context}`;
+    } else if (hasFiles && !hasText) {
+      topic = selectedSubject;
+    } else {
+      topic = topicInput.trim();
+    }
+
     setQuizTopic(topic);
     setQuizContext(context);
     setExtractedContext(context);
