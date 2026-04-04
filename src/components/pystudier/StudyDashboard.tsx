@@ -75,8 +75,9 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
           sessionId={activeSessionId === "new" ? undefined : activeSessionId}
           userName={userName}
           userId={userId}
-          onBack={() => { setActiveSessionId(null); loadSessions(); }}
+          onBack={() => { setActiveSessionId(null); setClassroomItem(null); loadSessions(); }}
           onSessionCreated={(id) => setActiveSessionId(id)}
+          classroomItem={classroomItem}
         />
       </div>
     );
