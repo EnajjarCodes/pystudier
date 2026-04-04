@@ -166,10 +166,31 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
 
               <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3">
                 {/* Start Studying CTA */}
-                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={startNewSession}
+                <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={() => startNewSession()}
                   className="w-full py-4 sm:py-5 rounded-2xl gradient-primary text-primary-foreground font-display font-bold text-base sm:text-lg shadow-soft flex items-center justify-center gap-2">
                   <Plus className="w-5 h-5" /> Start Studying
                 </motion.button>
+
+                {/* Google Classroom items */}
+                {classroom.connected && classroom.items.length > 0 && (
+                  <div className="space-y-2">
+                    <p className="text-xs font-display font-bold text-muted-foreground flex items-center gap-1.5">
+                      <GraduationCap className="w-3.5 h-3.5" /> From Google Classroom
+                    </p>
+                    {classroom.items.map((item) => (
+                      <motion.button
+                        key={item.id}
+                        whileHover={{ scale: 1.01 }}
+                        whileTap={{ scale: 0.99 }}
+                        onClick={() => startNewSession(item)}
+                        className="w-full p-3 rounded-2xl bg-card shadow-card border border-border hover:border-primary/30 transition-all text-left"
+                      >
+                        <p className="text-xs font-display font-bold text-foreground truncate">{item.courseName} — {item.teacherName || "Teacher"}</p>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">Topic: {item.title}</p>
+                      </motion.button>
+                    ))}
+                  </div>
+                )}
 
                 {/* Sessions list */}
                 {sessions.length === 0 ? (
