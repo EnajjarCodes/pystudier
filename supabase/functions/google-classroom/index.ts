@@ -34,8 +34,8 @@ Deno.serve(async (req) => {
 
     const { action, code, redirect_uri } = await req.json();
 
-    const CLIENT_ID = Deno.env.get("GOOGLE_CLASSROOM_CLIENT_ID");
-    const CLIENT_SECRET = Deno.env.get("GOOGLE_CLASSROOM_CLIENT_SECRET");
+    const CLIENT_ID = Deno.env.get("GOOGLE_CLASSROOM_CLIENT_ID") || Deno.env.get("CLIENT_ID");
+    const CLIENT_SECRET = Deno.env.get("GOOGLE_CLASSROOM_CLIENT_SECRET") || Deno.env.get("CLIENT_SECRET");
 
     if (!CLIENT_ID || !CLIENT_SECRET) {
       return new Response(JSON.stringify({ error: "Google Classroom not configured" }), {
