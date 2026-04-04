@@ -14,6 +14,7 @@ import mascot from "@/assets/mascot.png";
 import mascotWave from "@/assets/mascot-wave.png";
 import mascotThinking from "@/assets/mascot-thinking.png";
 import { ChevronDown } from "lucide-react";
+import type { ClassroomItem } from "@/hooks/use-google-classroom";
 
 type SessionStep = "subject" | "topic" | "quiz" | "summary" | "continue" | "chat" | "review" | "review-results";
 
@@ -23,6 +24,7 @@ interface SessionFlowProps {
   userId: string;
   onBack: () => void;
   onSessionCreated?: (id: string) => void;
+  classroomItem?: ClassroomItem | null;
 }
 
 const SUBJECTS = [
