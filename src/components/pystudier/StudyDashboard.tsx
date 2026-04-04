@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, BarChart3, Menu, X, Plus, Clock, Trash2, LogOut } from "lucide-react";
+import { BookOpen, BarChart3, Menu, X, Plus, Clock, Trash2, LogOut, GraduationCap, Link2, Unlink } from "lucide-react";
 import ProgressDashboard from "./ProgressDashboard";
 import SessionFlow from "./SessionFlow";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useGoogleClassroom, type ClassroomItem } from "@/hooks/use-google-classroom";
 
 interface StudyDashboardProps {
   userName: string;
