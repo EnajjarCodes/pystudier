@@ -47,8 +47,8 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
 
   useEffect(() => { loadSessions(); }, [loadSessions]);
 
-  const startNewSession = () => {
-    // Don't create DB record yet — SessionFlow creates it at quiz stage
+  const startNewSession = (item?: ClassroomItem) => {
+    setClassroomItem(item || null);
     setActiveSessionId("new");
   };
 
