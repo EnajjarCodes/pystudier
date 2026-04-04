@@ -117,7 +117,18 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
                 <p className="font-display font-bold text-foreground text-sm">👋 Hey, {userName}</p>
               </div>
               <div className="flex-1" />
-              <div className="p-4 border-t border-border">
+              <div className="p-4 border-t border-border space-y-2">
+                {classroom.connected ? (
+                  <button onClick={() => { classroom.disconnect(); setMenuOpen(false); }}
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-muted-foreground hover:bg-secondary transition-colors text-sm font-body">
+                    <Unlink className="w-4 h-4" /> Disconnect Classroom
+                  </button>
+                ) : (
+                  <button onClick={() => { classroom.connect(); setMenuOpen(false); }}
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-primary hover:bg-primary/10 transition-colors text-sm font-body">
+                    <Link2 className="w-4 h-4" /> Connect Google Classroom
+                  </button>
+                )}
                 <button onClick={handleLogout} className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-destructive hover:bg-destructive/10 transition-colors text-sm font-body">
                   <LogOut className="w-4 h-4" /> Sign Out
                 </button>
