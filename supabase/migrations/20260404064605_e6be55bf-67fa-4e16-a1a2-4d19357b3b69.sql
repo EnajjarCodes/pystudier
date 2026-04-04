@@ -1,0 +1,1 @@
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS google_classroom_token TEXT DEFAULT NULL;
