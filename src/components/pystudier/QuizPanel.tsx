@@ -63,12 +63,12 @@ const DIFFICULTIES = [
   { id: "hard" as const, label: "Hard", icon: Flame, desc: "Complex reasoning" },
 ];
 
-const QuizPanel = ({ userName, userId, chatContext, onQuizComplete, onIncorrectQuestions, initialTopic, initialSubject, sessionMode, reviewMode, reviewQuestionCount }: QuizPanelProps) => {
+const QuizPanel = ({ userName, userId, chatContext, onQuizComplete, onIncorrectQuestions, initialTopic, initialSubject, sessionMode, reviewMode, reviewQuestionCount, dynamicQuestionCount }: QuizPanelProps) => {
   const [phase, setPhase] = useState<QuizPhase>(initialTopic ? "loading" : "setup");
   const [setup, setSetup] = useState<QuizSetup>({
     topic: initialTopic || "",
     questionTypes: ["multiple_choice", "true_false", "written"],
-    questionCount: reviewMode ? (reviewQuestionCount || 5) : 10,
+    questionCount: reviewMode ? (reviewQuestionCount || 5) : (dynamicQuestionCount || 10),
     checkAnswers: true,
     difficulty: reviewMode ? "hard" : "normal",
   });
