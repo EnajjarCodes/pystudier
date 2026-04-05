@@ -7,11 +7,13 @@ export async function streamChat({
   onDelta,
   onDone,
   onError,
+  systemPrompt,
 }: {
   messages: ChatMsg[];
   onDelta: (deltaText: string) => void;
   onDone: () => void;
   onError?: (error: string) => void;
+  systemPrompt?: string;
 }) {
   const resp = await fetch(CHAT_URL, {
     method: "POST",
@@ -19,7 +21,7 @@ export async function streamChat({
       "Content-Type": "application/json",
       Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
     },
-    body: JSON.stringify({ messages }),
+    body: JSON.stringify({ messages, systemPrompt }),
   });
 
   if (!resp.ok) {
