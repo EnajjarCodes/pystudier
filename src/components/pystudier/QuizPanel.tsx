@@ -46,6 +46,8 @@ interface QuizPanelProps {
   /** Review mode: slightly harder, fewer questions */
   reviewMode?: boolean;
   reviewQuestionCount?: number;
+  /** Dynamic question count from Pystudying mode */
+  dynamicQuestionCount?: number;
 }
 
 const MAX_QUESTIONS = 50;
