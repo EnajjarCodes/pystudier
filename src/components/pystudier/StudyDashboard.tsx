@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { BookOpen, BarChart3, Menu, X, Plus, Clock, Trash2, LogOut, GraduationCap, Link2, Unlink } from "lucide-react";
+import { BookOpen, BarChart3, Menu, X, Plus, Clock, Trash2, LogOut, GraduationCap, Link2, Unlink, Settings, User, CheckCircle2, PlayCircle } from "lucide-react";
 import ProgressDashboard from "./ProgressDashboard";
 import SessionFlow from "./SessionFlow";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import { useGoogleClassroom, type ClassroomItem } from "@/hooks/use-google-classroom";
 
 interface StudyDashboardProps {
@@ -18,6 +19,10 @@ interface StudySession {
   id: string;
   title: string;
   current_step: string;
+  stage: string | null;
+  subject: string | null;
+  topic: string | null;
+  learning_level: string | null;
   quiz_topic: string | null;
   quiz_score: number | null;
   quiz_total: number | null;
@@ -32,6 +37,7 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [classroomItem, setClassroomItem] = useState<ClassroomItem | null>(null);
   const classroom = useGoogleClassroom(userId);
+  const navigate = useNavigate();
 
   // Fetch classroom items on mount
   useEffect(() => { classroom.fetchItems(); }, []);
@@ -93,6 +99,16 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
     return date.toLocaleDateString();
   };
 
+  const getSessionStatus = (session: StudySession) => {
+    const stage = session.stage || session.current_step || "subject";
+    if (stage === "continue" || stage === "review-results" || stage === "chat") {
+      if (session.quiz_score !== null && session.quiz_total !== null && session.quiz_score >= Math.ceil(session.quiz_total * 0.7)) {
+        return { label: "Completed", color: "text-green-600 bg-green-100", icon: CheckCircle2 };
+      }
+    }
+    return { label: "In Progress", color: "text-primary bg-primary/10", icon: PlayCircle };
+  };
+
   return (
     <div className="h-[100dvh] min-h-0 bg-background flex flex-col overflow-hidden">
       {/* Top Nav */}
@@ -113,9 +129,6 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setMenuOpen(false)} className="fixed inset-0 bg-foreground/20 z-40" />
             <motion.div initial={{ x: -300 }} animate={{ x: 0 }} exit={{ x: -300 }} className="fixed left-0 top-12 sm:top-14 bottom-0 w-72 sm:w-80 bg-card border-r border-border z-50 flex flex-col">
-              <div className="p-4 border-b border-border">
-                <p className="font-display font-bold text-foreground text-sm">👋 Hey, {userName}</p>
-              </div>
               <div className="flex-1" />
               <div className="p-4 border-t border-border space-y-2">
                 {classroom.connected ? (
@@ -129,6 +142,10 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
                     <Link2 className="w-4 h-4" /> Connect Google Classroom
                   </button>
                 )}
+                <button onClick={() => { navigate("/settings"); setMenuOpen(false); }}
+                  className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-muted-foreground hover:bg-secondary transition-colors text-sm font-body">
+                  <Settings className="w-4 h-4" /> Settings
+                </button>
                 <button onClick={handleLogout} className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-destructive hover:bg-destructive/10 transition-colors text-sm font-body">
                   <LogOut className="w-4 h-4" /> Sign Out
                 </button>
@@ -200,36 +217,44 @@ const StudyDashboard = ({ userName, userId }: StudyDashboardProps) => {
                     <p className="text-xs sm:text-sm text-muted-foreground mt-1">Tap "Start Studying" above to begin!</p>
                   </div>
                 ) : (
-                  sessions.map((session, i) => (
-                    <motion.div key={session.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-                      className="p-3 sm:p-4 rounded-2xl bg-card shadow-card border border-border hover:border-primary/30 transition-all cursor-pointer group"
-                      onClick={() => setActiveSessionId(session.id)}>
-                      <div className="flex items-start justify-between gap-2">
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-display font-bold text-sm text-foreground truncate">{session.title || "Study Session"}</h3>
-                          <div className="flex items-center gap-2 mt-1.5">
-                            {session.quiz_topic && (
-                              <span className="text-[10px] sm:text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-semibold truncate">
-                                {session.quiz_topic}
+                  sessions.map((session, i) => {
+                    const status = getSessionStatus(session);
+                    const StatusIcon = status.icon;
+                    return (
+                      <motion.div key={session.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+                        className="p-3 sm:p-4 rounded-2xl bg-card shadow-card border border-border hover:border-primary/30 transition-all cursor-pointer group"
+                        onClick={() => setActiveSessionId(session.id)}>
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex-1 min-w-0">
+                            <h3 className="font-display font-bold text-sm text-foreground truncate">{session.title || "Study Session"}</h3>
+                            <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                              {(session.topic || session.quiz_topic) && (
+                                <span className="text-[10px] sm:text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary font-semibold truncate max-w-[150px]">
+                                  {session.topic || session.quiz_topic}
+                                </span>
+                              )}
+                              <span className={`text-[10px] sm:text-xs px-2 py-0.5 rounded-full font-semibold flex items-center gap-1 ${status.color}`}>
+                                <StatusIcon className="w-3 h-3" />
+                                {status.label}
                               </span>
-                            )}
-                            {session.quiz_score !== null && session.quiz_total !== null && (
-                              <span className="text-[10px] sm:text-xs text-muted-foreground">
-                                {session.quiz_score}/{session.quiz_total}
-                              </span>
-                            )}
+                              {session.quiz_score !== null && session.quiz_total !== null && (
+                                <span className="text-[10px] sm:text-xs text-muted-foreground">
+                                  {session.quiz_score}/{session.quiz_total}
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-[10px] sm:text-xs text-muted-foreground mt-1 flex items-center gap-1">
+                              <Clock className="w-3 h-3" /> {formatDate(session.updated_at)}
+                            </p>
                           </div>
-                          <p className="text-[10px] sm:text-xs text-muted-foreground mt-1 flex items-center gap-1">
-                            <Clock className="w-3 h-3" /> {formatDate(session.updated_at)}
-                          </p>
+                          <button onClick={(e) => { e.stopPropagation(); deleteSession(session.id); }}
+                            className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-all flex-shrink-0">
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
                         </div>
-                        <button onClick={(e) => { e.stopPropagation(); deleteSession(session.id); }}
-                          className="p-1.5 rounded-lg text-muted-foreground hover:text-destructive hover:bg-destructive/10 opacity-0 group-hover:opacity-100 transition-all flex-shrink-0">
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-                    </motion.div>
-                  ))
+                      </motion.div>
+                    );
+                  })
                 )}
               </div>
             </div>

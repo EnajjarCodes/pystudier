@@ -52,6 +52,7 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated, cl
   const [quizTopic, setQuizTopic] = useState("");
   const [quizContext, setQuizContext] = useState("");
   const [learningLevel, setLearningLevel] = useState<LearningLevel>("beginner");
+  const [restoredSession, setRestoredSession] = useState(false);
 
   const [quizResult, setQuizResult] = useState<{ score: number; total: number; topic: string } | null>(null);
   const [summary, setSummary] = useState("");
@@ -78,6 +79,72 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated, cl
 
   const generateId = () => Math.random().toString(36).substr(2, 9);
 
+  // ── Save session state to DB ──
+  const saveSessionState = useCallback(async (overrides?: Record<string, any>) => {
+    if (!currentSessionId || currentSessionId === "new") return;
+    const payload: Record<string, any> = {
+      stage: step,
+      subject: selectedSubject,
+      topic: quizTopic,
+      learning_level: learningLevel,
+      weak_areas: JSON.stringify(weakAreas),
+      pystudy_messages: JSON.stringify(pystudyRef.current),
+      updated_at: new Date().toISOString(),
+      ...overrides,
+    };
+    await supabase.from("study_sessions" as any).update(payload).eq("id", currentSessionId);
+  }, [currentSessionId, step, selectedSubject, quizTopic, learningLevel, weakAreas]);
+
+  // ── Restore session from DB ──
+  useEffect(() => {
+    if (!sessionId || sessionId === "new" || restoredSession) return;
+    const restore = async () => {
+      const { data } = await supabase
+        .from("study_sessions" as any)
+        .select("*")
+        .eq("id", sessionId)
+        .single();
+      if (!data) return;
+      const s = data as any;
+      setSelectedSubject(s.subject || s.title || "");
+      setQuizTopic(s.topic || s.quiz_topic || "");
+      setLearningLevel((s.learning_level as LearningLevel) || "beginner");
+      if (s.quiz_score !== null && s.quiz_total !== null) {
+        setQuizResult({ score: s.quiz_score, total: s.quiz_total, topic: s.topic || s.quiz_topic || "" });
+      }
+      try {
+        const wa = typeof s.weak_areas === "string" ? JSON.parse(s.weak_areas) : (s.weak_areas || []);
+        setWeakAreas(wa);
+      } catch {}
+      try {
+        const msgs = typeof s.pystudy_messages === "string" ? JSON.parse(s.pystudy_messages) : (s.pystudy_messages || []);
+        if (msgs.length > 0) {
+          pystudyRef.current = msgs;
+          setPystudyMessages(msgs.map((m: any, i: number) => ({ id: `restored-${i}`, role: m.role, content: m.content })));
+          setPystudyExchangeCount(msgs.filter((m: any) => m.role === "assistant").length);
+        }
+      } catch {}
+
+      // Determine which step to resume
+      const stage = s.stage || s.current_step || "subject";
+      const validStages: SessionStep[] = ["subject", "topic", "level", "pystudying", "quiz", "summary", "continue", "chat", "review", "review-results"];
+      if (validStages.includes(stage as SessionStep)) {
+        setStep(stage as SessionStep);
+      } else {
+        setStep("continue");
+      }
+      setRestoredSession(true);
+    };
+    restore();
+  }, [sessionId, restoredSession]);
+
+  // Auto-save when step changes
+  useEffect(() => {
+    if (restoredSession || (currentSessionId && currentSessionId !== "new")) {
+      saveSessionState();
+    }
+  }, [step]);
+
   // Handle classroom item
   useEffect(() => {
     if (!classroomItem || sessionId) return;
@@ -91,7 +158,7 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated, cl
       setExtractedContext(context);
 
       const { data, error } = await supabase.from("study_sessions" as any).insert({
-        user_id: userId, title: subject, quiz_topic: topic,
+        user_id: userId, title: subject, subject, topic, quiz_topic: topic, stage: "level",
       } as any).select().single();
       if (data && !error) {
         const newId = (data as any).id;
@@ -187,7 +254,7 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated, cl
     // Create session now
     const sessionTitle = selectedSubject;
     const { data, error } = await supabase.from("study_sessions" as any).insert({
-      user_id: userId, title: sessionTitle, quiz_topic: quizTopic,
+      user_id: userId, title: sessionTitle, subject: selectedSubject, topic: quizTopic, quiz_topic: quizTopic, learning_level: level, stage: level === "review" ? "quiz" : "pystudying",
     } as any).select().single();
     if (data && !error) {
       const newId = (data as any).id;
@@ -196,10 +263,8 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated, cl
     }
 
     if (level === "review") {
-      // Skip teaching, go straight to practice test
       setStep("quiz");
     } else {
-      // Start Pystudying chat
       startPystudying(level);
     }
   };
@@ -214,7 +279,7 @@ const SessionFlow = ({ sessionId, userName, userId, onBack, onSessionCreated, cl
       ? `\n\nIMPORTANT: The student struggled with these areas previously. Focus your teaching on these weak spots:\n${retryWeakAreas.map((w, i) => `${i + 1}. ${w}`).join("\n")}`
       : "";
 
-    return `You are Pylo, a friendly AI study tutor in Pystudying mode.
+    return `You are Pylo, a friendly, warm AI study tutor 🦉. You're enthusiastic, encouraging, and occasionally say "hoot hoot" when the student does well.
 
 SUBJECT: ${selectedSubject}
 TOPIC: ${quizTopic}
@@ -223,23 +288,32 @@ ${weakAreaNote}
 
 ${levelInstructions}
 
-RULES:
+PERSONALITY RULES:
+- Be genuinely warm and human-like — never robotic
+- Use casual, friendly language like talking to a friend
+- Be encouraging — celebrate small wins
+- Use emojis naturally (not excessively)
+- Occasionally use "hoot hoot 🦉" when the student gets something right
+- Use relatable, everyday examples
+- Keep it fun but focused
+
+TEACHING RULES:
 1. Teach ONE concept per message
-2. Include a clear example for each concept
+2. Include a clear, relatable example for each concept
 3. End each message with ONE simple question to check understanding
 4. Use simple, friendly language
 5. Use markdown formatting (bold, lists, headers)
 6. Start easy and increase complexity gradually
-7. Be encouraging and warm
-8. Keep each message focused and not too long (max 3-4 paragraphs)
-9. If the student answers your question wrong, gently correct them and re-explain before moving on
-10. After covering the main concepts (usually 3-5 steps), let the student know they've covered the key ideas
+7. Keep each message focused and not too long (max 3-4 paragraphs)
+8. If the student answers your question wrong, gently correct them and re-explain before moving on
+9. After covering the main concepts (usually 3-5 steps), let the student know they've covered the key ideas
 
 DO NOT:
 - Use complex academic language
 - Overwhelm with too much info at once
 - Skip checking understanding
 - Be judgmental about wrong answers
+- Sound like a textbook
 
 Start by introducing the first concept now.`;
   };
@@ -250,7 +324,6 @@ Start by introducing the first concept now.`;
     setPystudyExchangeCount(0);
     setStep("pystudying");
 
-    // Send initial greeting + first teaching step
     const systemPrompt = buildPystudyingPrompt(level, retryWeakAreas);
     const initialMsg = retryWeakAreas
       ? `Let's review the areas I struggled with in ${quizTopic}.`
@@ -277,6 +350,7 @@ Start by introducing the first concept now.`;
         pystudyRef.current.push({ role: "assistant", content: assistantSoFar });
         setPystudyLoading(false);
         setPystudyExchangeCount(1);
+        saveSessionState({ pystudy_messages: JSON.stringify(pystudyRef.current) });
       },
       onError: (err) => { toast.error(err); setPystudyLoading(false); },
     });
@@ -308,6 +382,7 @@ Start by introducing the first concept now.`;
           pystudyRef.current.push({ role: "assistant", content: assistantSoFar });
           setPystudyLoading(false);
           setPystudyExchangeCount(prev => prev + 1);
+          saveSessionState({ pystudy_messages: JSON.stringify(pystudyRef.current) });
         },
         onError: (err) => { toast.error(err); setPystudyLoading(false); },
       });
@@ -335,7 +410,7 @@ Start by introducing the first concept now.`;
     if (currentSessionId) {
       await supabase.from("study_sessions" as any).update({
         quiz_score: score, quiz_total: total, quiz_topic: topic,
-        current_step: "summary", updated_at: new Date().toISOString(),
+        stage: "summary", updated_at: new Date().toISOString(),
       }).eq("id", currentSessionId);
     }
   };
@@ -343,11 +418,13 @@ Start by introducing the first concept now.`;
   const handleIncorrectQuestions = (incorrect: { question: string; userAnswer: string; correctAnswer: string }[]) => {
     setIncorrectQuestions(incorrect);
     setWeakAreas(incorrect.map(q => q.question));
+    saveSessionState({ weak_areas: JSON.stringify(incorrect.map(q => q.question)) });
   };
 
   const handleReviewComplete = async (score: number, total: number) => {
     setReviewScore({ score, total });
     setStep("review-results");
+    saveSessionState({ stage: "review-results", quiz_score: score, quiz_total: total });
   };
 
   const startReview = () => {
@@ -382,7 +459,6 @@ Start by introducing the first concept now.`;
     }
   };
 
-  // Handle going back to pystudying after bad test performance
   const retryWithPystudying = () => {
     const areas = incorrectQuestions.map(q => `${q.question} (correct: ${q.correctAnswer})`);
     setWeakAreas(areas);
@@ -642,7 +718,7 @@ Start by introducing the first concept now.`;
         </div>
         {quizResult && (
           <div className="p-3 sm:p-4 border-t border-border bg-card/80 flex-shrink-0">
-            <PyloMessage text={quizResult.score >= Math.ceil(quizResult.total * 0.7) ? "You're ready for a real test. 🎉" : "Let's review what you missed."} />
+            <PyloMessage text={quizResult.score >= Math.ceil(quizResult.total * 0.7) ? "Hoot hoot! You nailed it! 🦉🎉" : "Not bad — let's see what we can improve!"} />
             <motion.button initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} whileTap={{ scale: 0.98 }} onClick={goToSummary}
               className="w-full mt-3 py-3 rounded-xl gradient-primary text-primary-foreground font-display font-bold shadow-soft text-sm sm:text-base flex items-center justify-center gap-2">
               Continue <ChevronRight className="w-4 h-4" />
@@ -660,7 +736,7 @@ Start by introducing the first concept now.`;
     return (
       <div className="flex flex-col h-full min-h-0">
         <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3">
-          <PyloMessage text="Here are the key ideas." />
+          <PyloMessage text="Here's what we covered — let's lock it in! 🦉" />
           {quizResult && (
             <div className="p-3 sm:p-4 rounded-2xl bg-card shadow-card border border-border text-center">
               <p className="text-2xl sm:text-3xl font-display font-black text-primary">{Math.round((quizResult.score / quizResult.total) * 100)}%</p>
@@ -755,7 +831,7 @@ Start by introducing the first concept now.`;
             )}
             <div className="mt-2 p-3 rounded-2xl bg-card shadow-card border border-border max-w-xs">
               <p className="text-sm font-body text-foreground">
-                {passed ? "Nice work — you're done with this topic. 🎉" : "Let's try that again to lock it in."}
+                {passed ? "Hoot hoot! You've mastered this! 🦉🎉" : "Almost there — let's give it another shot!"}
               </p>
             </div>
           </motion.div>
@@ -822,12 +898,11 @@ Start by introducing the first concept now.`;
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center text-center gap-3 mb-6">
           <img src={didWell ? mascotWave : mascot} alt="Pylo" className="w-14 h-14 sm:w-16 sm:h-16 pylo-appear pylo-idle" />
           <h3 className="font-display font-bold text-base sm:text-lg text-foreground">
-            {didWell ? "Great work! What's next?" : "Let's strengthen what you missed."}
+            {didWell ? "Hoot hoot! Great work! What's next? 🦉" : "Let's strengthen what you missed."}
           </h3>
         </motion.div>
 
         <div className="space-y-3 max-w-sm mx-auto">
-          {/* If did poorly, offer to go back to pystudying */}
           {!didWell && incorrectQuestions.length > 0 && (
             <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={retryWithPystudying}
               className="w-full p-4 rounded-2xl bg-card shadow-card border-2 border-primary/30 hover:border-primary transition-all flex items-center gap-3 text-left">
@@ -841,7 +916,6 @@ Start by introducing the first concept now.`;
             </motion.button>
           )}
 
-          {/* Review button */}
           {incorrectQuestions.length > 0 && didWell && (
             <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={startReview}
               className="w-full p-4 rounded-2xl bg-card shadow-card border-2 border-primary/30 hover:border-primary transition-all flex items-center gap-3 text-left">
