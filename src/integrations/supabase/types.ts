@@ -141,34 +141,55 @@ export type Database = {
           created_at: string
           current_step: string
           id: string
+          learning_level: string | null
+          progress: Json | null
+          pystudy_messages: Json | null
           quiz_score: number | null
           quiz_topic: string | null
           quiz_total: number | null
+          stage: string | null
+          subject: string | null
           title: string
+          topic: string | null
           updated_at: string
           user_id: string
+          weak_areas: Json | null
         }
         Insert: {
           created_at?: string
           current_step?: string
           id?: string
+          learning_level?: string | null
+          progress?: Json | null
+          pystudy_messages?: Json | null
           quiz_score?: number | null
           quiz_topic?: string | null
           quiz_total?: number | null
+          stage?: string | null
+          subject?: string | null
           title?: string
+          topic?: string | null
           updated_at?: string
           user_id: string
+          weak_areas?: Json | null
         }
         Update: {
           created_at?: string
           current_step?: string
           id?: string
+          learning_level?: string | null
+          progress?: Json | null
+          pystudy_messages?: Json | null
           quiz_score?: number | null
           quiz_topic?: string | null
           quiz_total?: number | null
+          stage?: string | null
+          subject?: string | null
           title?: string
+          topic?: string | null
           updated_at?: string
           user_id?: string
+          weak_areas?: Json | null
         }
         Relationships: []
       }
